@@ -1,6 +1,5 @@
 package com.datn.service;
 
-import com.datn.dto.BaseDto;
 import com.datn.dto.ProductDto;
 import com.datn.entity.Brand;
 import com.datn.entity.Product;

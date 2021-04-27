@@ -26,23 +26,14 @@ public class AppUtil {
     }
 
     public static Long NVL(Long n){
-        if (n != null){
-            return n;
-        }
-        return 0L;
+        return n == null ? 0L : n;
     }
 
     public static Integer NVL(Integer n){
-        if (n != null){
-            return n;
-        }
-        return 0;
+        return n == null ? 0 : n;
     }
 
     public static Double NVL(Double n){
-        if (n != null){
-            return n;
-        }
-        return 0.0;
+        return n == null ? 0.0 : n;
     }
 }
