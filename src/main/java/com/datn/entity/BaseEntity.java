@@ -20,7 +20,6 @@ public abstract class BaseEntity {
     private Long id;
     private Date createdDate;
     private Date updatedDate;
-
     public BaseEntity() {
     }
 }
