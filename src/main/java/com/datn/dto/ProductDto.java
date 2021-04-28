@@ -17,7 +17,9 @@ public class ProductDto extends BaseDto{
     private Double sale; // giảm giá
     private String image;
     private Long productTypeId; // loại sản phẩm
+    private String productTypeName; // ở đây đặt tên giống vs tên ở bên ent + tên biến giá trị của đối tượng này: productType + Name, thì modelmapper nó phân truy cập sâu vào bên trong đối tượng lấy giá trị tướng ứng
     private Long brandId;
+    private String brandName;
 
     public ProductDto() {}
 }

@@ -26,15 +26,19 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private BrandRepository brandRepository;
 
+    /**
+     * Lấy all sản phẩm ko phân trang
+     * @return
+     */
     @Override
     public List<ProductDto> findAll() {
         List<ProductDto> productDtoList;
-        List<Product> productList = productRepository.findAll();
-        if (!AppUtil.isNullOrEmpty(productList)){
+        List<Product> productList = productRepository.findAll(); // lấy danh sách product dạng entity, findAll() - hàm sẵn do jpa cung cấp
+        if (!AppUtil.isNullOrEmpty(productList)){ // kiểm tra productList != null
             productDtoList = productList.stream()
-                    .map(ent -> AppUtil.mapperEntAndDto(ent, ProductDto.class))
-                    .collect(Collectors.toList());
-            return productDtoList;
+                    .map(ent -> AppUtil.mapperEntAndDto(ent, ProductDto.class)) // method mapperEntAndDto dùng để chuyển đổi data từ entity sang dto or ngược lại tùy theo mục đích
+                    .collect(Collectors.toList()); // chuyển đổi productList sang list mới ở dạng dto
+            return productDtoList; // trả kết quả
         }
         return null;
     }

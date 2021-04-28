@@ -9,6 +9,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Date;
 
+
+//Hóa đơn
 @Entity
 @Table(name = "_order")
 @Getter

@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 import java.util.Collection;
 import java.util.Date;
 
+//bảng User
 @Entity
 @Table
 @Getter

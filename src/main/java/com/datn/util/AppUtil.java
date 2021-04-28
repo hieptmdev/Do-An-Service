@@ -5,6 +5,13 @@ import org.modelmapper.ModelMapper;
 import java.util.List;
 
 public class AppUtil {
+    /**
+     * Chuyển đối dât từ entity sang dto và ngược lại
+     * @param source
+     * @param result
+     * @param <T>
+     * @return
+     */
     public static <T> T mapperEntAndDto(Object source, Class<T> result){
         ModelMapper modelMapper = new ModelMapper();
         modelMapper.getConfiguration().setAmbiguityIgnored(true);
