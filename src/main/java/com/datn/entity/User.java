@@ -29,7 +29,7 @@ public class User extends BaseEntity implements UserDetails {
     private String username;
     @Column(nullable = false)
     private String password;
-    @Column(columnDefinition = "boolean default true")
+    @Column(columnDefinition = "boolean default false")
     private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false
     
     public User() {}
@@ -49,7 +49,7 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     @Transient
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
     @Override

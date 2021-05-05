@@ -1,7 +1,9 @@
 package com.datn.util;
 
+import com.datn.config.JwtConfig;
 import org.modelmapper.ModelMapper;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public class AppUtil {
@@ -42,5 +44,13 @@ public class AppUtil {
 
     public static Double NVL(Double n){
         return n == null ? 0.0 : n;
+    }
+
+    public static String getJwt(HttpServletRequest request, JwtConfig jwtConfig) {
+        String jwtHeader = request.getHeader(jwtConfig.getHeader());
+        if (jwtHeader != null && jwtHeader.startsWith(jwtConfig.getPrefix())) {
+            return jwtHeader.replace(jwtConfig.getPrefix() + " ", "");
+        }
+        return null;
     }
 }
