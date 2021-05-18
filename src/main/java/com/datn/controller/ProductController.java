@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/products")
+@CrossOrigin("http://localhost:4200")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -19,6 +20,14 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.findAll());
     }
 
+    @GetMapping("/new")
+    public ResponseEntity findNew(HttpServletRequest request){
+        return ResponseEntity.ok().body(productService.findNew());
+    }
+    @GetMapping("/sale")
+    public ResponseEntity findSale(HttpServletRequest request){
+        return ResponseEntity.ok().body(productService.findSale());
+    }
     @GetMapping("")
     public ResponseEntity search(HttpServletRequest request, ProductDto dto){
         return ResponseEntity.ok().body(productService.search(request, dto));
@@ -28,6 +37,12 @@ public class ProductController {
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(productService.findById(request, id));
     }
+
+    @GetMapping("/brands/{id}")
+    public ResponseEntity findforBrands(HttpServletRequest request, @PathVariable Long id){
+        return ResponseEntity.ok().body(productService.findAllBrand(request, id));
+    }
+
 
     @PostMapping("")
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto){

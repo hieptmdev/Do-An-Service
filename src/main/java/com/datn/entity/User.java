@@ -30,7 +30,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String password;
     @Column(columnDefinition = "boolean default false")
-    private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false
+    private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false, bạn sửa đi, cả tôi sợ sai vcl 
     
     public User() {}
 
@@ -64,3 +64,4 @@ public class User extends BaseEntity implements UserDetails {
         return true;
     }
 }
+    

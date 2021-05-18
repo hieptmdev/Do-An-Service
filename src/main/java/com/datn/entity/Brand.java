@@ -16,6 +16,6 @@ import javax.persistence.Table;
 public class Brand extends BaseEntity{
     private String name;
     private String code;
-
+    private String image;
     public Brand() {}
 }

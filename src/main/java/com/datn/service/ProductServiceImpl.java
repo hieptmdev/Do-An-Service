@@ -1,6 +1,9 @@
 package com.datn.service;
 
+import com.datn.dto.ColorDTO;
 import com.datn.dto.ProductDto;
+import com.datn.dto.ProductTypeDTO;
+import com.datn.dto.SizeDto;
 import com.datn.entity.Brand;
 import com.datn.entity.Product;
 import com.datn.entity.ProductType;
@@ -42,16 +45,42 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+    @Override
+    public List<ProductDto> findNew() {
+        return productRepository.getProductNew()
+                .stream()
+                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class))
+                .collect(Collectors.toList());
+    }
+    @Override
+    public List<ProductDto> findSale() {
+        return productRepository.getProductSale()
+                .stream()
+                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ProductDto> findAllBrand(HttpServletRequest request, Long id) {
+        return productRepository.getAllByBrands(id)
+                .stream()
+                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class)).
+                        collect(Collectors.toList());
+    }
+
 
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
         Product product;
         if (productDto != null) {
+            // dữ liệu ms về type  va brand
             ProductType productType = AppUtil.NVL(productDto.getProductTypeId()) == 0L ? null :
                     productTypeRepository.findById(productDto.getProductTypeId()).orElse(null);
             Brand brand = AppUtil.NVL(productDto.getBrandId()) == 0L ? null :
                     brandRepository.findById(productDto.getBrandId()).orElse(null);
+
+            //Luw
             if (AppUtil.NVL(productDto.getId()) == 0L) {
                 product = AppUtil.mapperEntAndDto(productDto, Product.class);
                 product.setCreatedDate(new Date());
@@ -64,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
                     Product data = AppUtil.mapperEntAndDto(productDto, Product.class);
                     data.setId(product.getId());
                     data.setUpdatedDate(new Date());
-                    data.setProductType(productType);
+                    data.setProductType(productType); // chỗ này do có thể thay đôi nên set lại thôi, data ms lấy ở trên r
                     data.setBrand(brand);
                     product = data;
                 }
@@ -78,7 +107,17 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto findById(HttpServletRequest request, Long id) {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null){
-            return AppUtil.mapperEntAndDto(product, ProductDto.class);
+            ProductDto productDto = AppUtil.mapperEntAndDto(product, ProductDto.class);
+            productDto.setSizeList(product.getProductInfoList()
+                    .stream()
+                    .map(prodInfo -> AppUtil.mapperEntAndDto(prodInfo.getSize(), SizeDto.class))
+                    .collect(Collectors.toList()));
+            productDto.setColoList(product.getProductInfoList()
+                    .stream()
+                    .map(productInfo -> AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class))
+                    .collect(Collectors.toList())
+            );
+            return productDto;
         }
         return null;
     }
@@ -94,7 +133,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto search(HttpServletRequest request, ProductDto dto) {
+    public List<ProductDto> search(HttpServletRequest request, ProductDto dto) {
         return null;
     }
+
+
 }
