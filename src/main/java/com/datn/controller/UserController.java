@@ -18,7 +18,6 @@ public class UserController {
 
     @GetMapping("/all")
     public ResponseEntity findAll(){
-
         return ResponseEntity.ok().body(userService.findAll());
     }
 
