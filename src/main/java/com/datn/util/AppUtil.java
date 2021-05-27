@@ -4,7 +4,10 @@ import com.datn.config.JwtConfig;
 import org.modelmapper.ModelMapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 public class AppUtil {
     /**
@@ -52,5 +55,14 @@ public class AppUtil {
             return jwtHeader.replace(jwtConfig.getPrefix() + " ", "");
         }
         return null;
+    }
+
+    public static String generateOrderCode(){
+        Random random = new Random();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ORDER");
+        sb.append(new SimpleDateFormat("ddMMyy").format(new Date()));
+        sb.append(random.nextInt(10));
+        return sb.toString();
     }
 }

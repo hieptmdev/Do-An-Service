@@ -23,6 +23,7 @@ public class ProductDto extends BaseDto{
     private Long startPrice;
     private Long endPrice;
     private String status;
+    private String mieuTa;
     private List<SizeDto> sizeList;
     private List<ColorDTO> coloList;
     public ProductDto() {}

@@ -25,6 +25,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             " where br.id = :id or p.brand.id = :id")
     List<Product> getAllByBrands(Long id);
 
+//    @Query("select p from Product p where lower(p.name) like concat('%', :name, '%')")
+    @Query("select p from Product p where lower(p.name) like concat('%', :name, '%')")
 
+    List<Product>search (String name);
 
 }

@@ -1,6 +1,7 @@
 package com.datn.controller;
 
 import com.datn.dto.BrandDTO;
+import com.datn.dto.OderDTO;
 import com.datn.service.iservice.BrandService;
 import com.datn.service.iservice.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,6 @@ public class OderController {
 
     @GetMapping("/all")
     public ResponseEntity findAll(){
-
         return ResponseEntity.ok().body(orderService.findAll());
     }
 
@@ -26,13 +26,21 @@ public class OderController {
 //    public ResponseEntity search(HttpServletRequest request, BrandDTO dto){
 //        return ResponseEntity.ok().body(orderService.search(dto));
 //    }
-
+    @GetMapping("/user/{id}")
+    public ResponseEntity findByUserId(HttpServletRequest request, @PathVariable Long id){
+        return ResponseEntity.ok().body(orderService.findByUserId(request,id));
+    }
     @GetMapping("/{id}")
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(orderService.findById(request, id));
     }
     @PostMapping("")
-    public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody BrandDTO dto){
+    public ResponseEntity save(HttpServletRequest request, @RequestBody OderDTO dto){
+        return ResponseEntity.ok().body(orderService.saveOrUpdate(request, dto));
+    }
+
+    @PutMapping("")
+    public ResponseEntity update(HttpServletRequest request, @RequestBody BrandDTO dto){
         return ResponseEntity.ok().body(orderService.saveOrUpdate(request, dto));
     }
 

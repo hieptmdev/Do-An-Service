@@ -1,9 +1,6 @@
 package com.datn.service;
 
-import com.datn.dto.ColorDTO;
-import com.datn.dto.ProductDto;
-import com.datn.dto.ProductTypeDTO;
-import com.datn.dto.SizeDto;
+import com.datn.dto.*;
 import com.datn.entity.Brand;
 import com.datn.entity.Product;
 import com.datn.entity.ProductType;
@@ -108,10 +105,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null){
             ProductDto productDto = AppUtil.mapperEntAndDto(product, ProductDto.class);
-            productDto.setSizeList(product.getProductInfoList()
+            /*productDto.setSizeList(product.getProductInfoList()
                     .stream()
                     .map(prodInfo -> AppUtil.mapperEntAndDto(prodInfo.getSize(), SizeDto.class))
-                    .collect(Collectors.toList()));
+                    .collect(Collectors.toList()));*/
             productDto.setColoList(product.getProductInfoList()
                     .stream()
                     .map(productInfo -> AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class))
@@ -134,8 +131,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> search(HttpServletRequest request, ProductDto dto) {
-        return null;
+        return productRepository.search(dto.getName())
+                .stream().map(product -> AppUtil.mapperEntAndDto(product, ProductDto.class))
+                .collect(Collectors.toList());
     }
-
 
 }

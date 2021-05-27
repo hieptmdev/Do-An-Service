@@ -1,18 +1,25 @@
 package com.datn.config;
 
 import com.datn.entity.User;
+import com.datn.service.iservice.UserService;
 import io.jsonwebtoken.*;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+@Component
 @Getter
 public class JwtConfig {
     private static final Logger logger = LoggerFactory.getLogger(JwtConfig.class);
+
+    @Autowired
+    UserService userService;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -35,8 +42,11 @@ public class JwtConfig {
     public String generateToken(Authentication authentication){
         Date present = new Date();
         User userPrincipal = (User) authentication.getPrincipal();
+        System.out.println(userPrincipal.toString());
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
+                .claim("admin_account", userPrincipal.getIsAdminAccount())
+                .claim("userID",userPrincipal.getId())
                 .setIssuedAt(present)
                 .setExpiration(new Date(present.getTime() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)

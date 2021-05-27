@@ -11,6 +11,7 @@ import com.datn.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,8 @@ public class UserServiceImpl implements UserService {
 
         @Autowired
         UserRepository userRepository;
+        @Autowired
+    PasswordEncoder passwordEncoder;
 
         @Override
         public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -48,15 +51,7 @@ public class UserServiceImpl implements UserService {
                     user = AppUtil.mapperEntAndDto(userDto, User.class);
                     user.setCreatedDate(new Date());
                     user.setUpdatedDate(new Date());
-                    user.setName(user.getName());
-                    user.setCode(user.getCode());
-                    user.setDob(user.getDob());
-                    user.setEmail(user.getEmail());
-                    user.setPhoneNumber(user.getPhoneNumber());
-                    user.setAddress(user.getAddress());
-                    user.setUsername(user.getUsername());
-                    user.setPassword(user.getPassword());
-                    user.setIsAdminAccount(user.getIsAdminAccount());
+                    user.setPassword(passwordEncoder.encode(user.getPassword()));
                 }
                 //update
                 else {

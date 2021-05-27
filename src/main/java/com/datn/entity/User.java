@@ -17,7 +17,7 @@ import java.util.Date;
 @Table
 @Getter
 @Setter
-public class User extends BaseEntity implements UserDetails {
+    public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String name;
     private String code;

@@ -1,8 +1,6 @@
 package com.datn.controller;
 
-import com.datn.dto.BrandDTO;
 import com.datn.dto.UserDto;
-import com.datn.entity.User;
 import com.datn.service.iservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/users")
+@CrossOrigin("http://localhost:4200")
 public class UserController {
     @Autowired
     UserService userService;

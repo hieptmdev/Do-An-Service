@@ -4,6 +4,7 @@ import com.datn.service.iservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -19,6 +20,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserService userService;
+    @Autowired
+    JwtConfig jwtConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -28,6 +31,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/products/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/type/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/brands/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/oders/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/oders/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthEntryPoint())
@@ -53,11 +62,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    protected JwtConfig jwtConfig(){
-        return new JwtConfig();
     }
 
     @Bean

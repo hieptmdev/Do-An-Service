@@ -22,14 +22,19 @@ public class Product extends BaseEntity{
     private Double sale; // giảm giá
     private String image;
     private String status;
+    private String mieuTa;
+
     @OneToMany(mappedBy = "product")
     private List<ProductInfo> productInfoList;
 
     @ManyToOne
-    private ProductType productType; // loại sản phẩm // ở đây là 1 object, khi truy vấn = jpa sẽ nhận đc toàn bộ giá trị theo khóa này
+    private ProductType productType;
+    // loại sản phẩm
+    // ở đây là 1 object, khi truy vấn = jpa sẽ nhận đc toàn bộ giá trị theo khóa này
 
     @ManyToOne
     private Brand brand;
+    //Hãng
 
     public Product(){}
 }

@@ -28,9 +28,9 @@ public class ProductController {
     public ResponseEntity findSale(HttpServletRequest request){
         return ResponseEntity.ok().body(productService.findSale());
     }
-    @GetMapping("")
+    @GetMapping("/seach")
     public ResponseEntity search(HttpServletRequest request, ProductDto dto){
-        return ResponseEntity.ok().body(productService.search(request, dto));
+        return ResponseEntity.ok().body(productService.search(request,dto));
     }
 
     @GetMapping("/{id}")
