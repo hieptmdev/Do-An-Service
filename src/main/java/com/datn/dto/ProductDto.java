@@ -26,5 +26,6 @@ public class ProductDto extends BaseDto{
     private String mieuTa;
     private List<SizeDto> sizeList;
     private List<ColorDTO> coloList;
+    private Long cartId;
     public ProductDto() {}
 }

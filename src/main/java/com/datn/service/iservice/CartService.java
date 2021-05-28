@@ -1,4 +1,8 @@
 package com.datn.service.iservice;
 
-public interface CartService {
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+public interface CartService extends BaseService{
+
 }

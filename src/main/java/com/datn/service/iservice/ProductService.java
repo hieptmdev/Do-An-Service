@@ -12,4 +12,5 @@ public interface ProductService extends BaseService{
     List<ProductDto> findNew();
     List<ProductDto>findSale();
     List<ProductDto> findAllBrand(HttpServletRequest request, Long id);
+    List<ProductDto> findFillter(HttpServletRequest request, ProductDto dto);
 }

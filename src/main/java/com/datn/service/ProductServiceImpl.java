@@ -65,10 +65,20 @@ public class ProductServiceImpl implements ProductService {
                         collect(Collectors.toList());
     }
 
+    @Override
+    public List<ProductDto> findFillter(HttpServletRequest request, ProductDto dto) {
+        return productRepository.getProductByBrandAndProductType(dto.getBrandId(), dto.getProductTypeId())
+                .stream()
+                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class))
+                .collect(Collectors.toList());
+    }
+
+
 
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
+        //entity
         Product product;
         if (productDto != null) {
             // dữ liệu ms về type  va brand

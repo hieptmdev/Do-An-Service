@@ -31,10 +31,10 @@ public class Product extends BaseEntity{
     private ProductType productType;
     // loại sản phẩm
     // ở đây là 1 object, khi truy vấn = jpa sẽ nhận đc toàn bộ giá trị theo khóa này
-
+    //1 sp có nhiều loại
     @ManyToOne
     private Brand brand;
-    //Hãng
+    //nhieu sp thuoc 1 brand
 
     public Product(){}
 }

@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/oders")
+@CrossOrigin("http://localhost:4200")
 public class OderController {
-
     @Autowired
     OrderService orderService;
 

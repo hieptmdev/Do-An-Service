@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table
@@ -11,13 +12,14 @@ import javax.persistence.*;
 @Setter
 public class Cart extends BaseEntity{
 
-    @ManyToOne
+    @OneToOne
     private User user;
     private Long totalMonneyCart; //tong gia tri all don hang
     private Long totalNumber; //tong so luong san pham
 
-    @ManyToOne
-    private Product product ;
+    @OneToMany(mappedBy = "cart")
+    //1 cart có nhiều sp
+    private List<CartDetaill> cartDetaills;
 
     public Cart() {
     }

@@ -20,6 +20,11 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.findAll());
     }
 
+    @GetMapping("/getfind")
+        public ResponseEntity findFillter(HttpServletRequest request, ProductDto productDto ) {
+        return ResponseEntity.ok().body(productService.findFillter(request,productDto));
+    }
+
     @GetMapping("/new")
     public ResponseEntity findNew(HttpServletRequest request){
         return ResponseEntity.ok().body(productService.findNew());
