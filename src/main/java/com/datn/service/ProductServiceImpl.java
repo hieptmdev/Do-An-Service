@@ -141,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> search(HttpServletRequest request, ProductDto dto) {
-        return productRepository.search(dto.getName())
+        return productRepository.search(dto.getName().toLowerCase())
                 .stream().map(product -> AppUtil.mapperEntAndDto(product, ProductDto.class))
                 .collect(Collectors.toList());
     }

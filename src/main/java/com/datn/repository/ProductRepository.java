@@ -30,7 +30,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //@Query("select p from Product p where lower(p.name) like concat('%', :name, '%')")
     @Query("select p from Product p where lower(p.name) like concat('%', :name, '%')")
-
     List<Product>search (String name);
 
 }
