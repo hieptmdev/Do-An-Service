@@ -28,11 +28,11 @@ public class AuthController {
     public ResponseEntity<?> getToken(@RequestBody UserDto dto){
         Date expiryDate;
         String jwtToken;
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
 
         jwtToken = jwtConfig.generateToken(authentication);
         expiryDate = jwtConfig.getExpiryDate(jwtToken);

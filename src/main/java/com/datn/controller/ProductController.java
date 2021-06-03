@@ -29,6 +29,7 @@ public class ProductController {
     public ResponseEntity findNew(HttpServletRequest request){
         return ResponseEntity.ok().body(productService.findNew());
     }
+
     @GetMapping("/sale")
     public ResponseEntity findSale(HttpServletRequest request){
         return ResponseEntity.ok().body(productService.findSale());

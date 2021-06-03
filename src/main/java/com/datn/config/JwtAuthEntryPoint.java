@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtAuthEntryPoint implements AuthenticationEntryPoint {
+    //Kiểm tra các url nếu k có token =>đi vào các đường dẫn cần token => bắn lỗi vào đây(SC_UNAUTHORIZED)
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthEntryPoint.class);
 
     @Override

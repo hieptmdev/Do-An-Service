@@ -11,6 +11,7 @@ import javax.persistence.Entity;
 public class ProductTypeDTO extends BaseDto{
     private String name;
     private String image;
+    private String code;
     private Long priceSell;
     private Long sale;
     public ProductTypeDTO() {

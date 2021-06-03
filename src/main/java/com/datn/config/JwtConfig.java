@@ -16,6 +16,7 @@ import java.util.Date;
 @Component
 @Getter
 public class JwtConfig {
+    //Thoong tin JWT , tạo nên token
     private static final Logger logger = LoggerFactory.getLogger(JwtConfig.class);
 
     @Autowired
@@ -35,10 +36,11 @@ public class JwtConfig {
     public JwtConfig() {}
 
     /**
-     * Tạo và trả về jwt
+     * Tạo và trả về jwt (token)
      * @param authentication
      * @return
      */
+
     public String generateToken(Authentication authentication){
         Date present = new Date();
         User userPrincipal = (User) authentication.getPrincipal();
@@ -47,12 +49,14 @@ public class JwtConfig {
                 .setSubject(userPrincipal.getUsername())
                 .claim("admin_account", userPrincipal.getIsAdminAccount())
                 .claim("userID",userPrincipal.getId())
+                .claim("name",userPrincipal.getName())
                 .setIssuedAt(present)
                 .setExpiration(new Date(present.getTime() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
+    //kiểm tra tokken
     public boolean validationToken(String token){
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
