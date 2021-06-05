@@ -50,6 +50,8 @@ public class JwtConfig {
                 .claim("admin_account", userPrincipal.getIsAdminAccount())
                 .claim("userID",userPrincipal.getId())
                 .claim("name",userPrincipal.getName())
+                .claim("role",userPrincipal.getCode())
+                .claim("email",userPrincipal.getEmail())
                 .setIssuedAt(present)
                 .setExpiration(new Date(present.getTime() + expiration))
                 .signWith(SignatureAlgorithm.HS512, secret)

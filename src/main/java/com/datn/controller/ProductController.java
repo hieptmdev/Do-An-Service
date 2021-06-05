@@ -1,6 +1,8 @@
 package com.datn.controller;
 
 import com.datn.dto.ProductDto;
+import com.datn.dto.ProductInfoDTO;
+import com.datn.entity.ProductInfo;
 import com.datn.service.iservice.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +56,7 @@ public class ProductController {
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto){
         return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
