@@ -13,6 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -73,11 +77,24 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-
-
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
+//        String image = null;
+        /*if (productDto.getFileImg() != null){
+            try {
+                File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
+                FileOutputStream fileOutputStream;
+                fileOutputStream=new FileOutputStream(newFile);
+                fileOutputStream.write(productDto.getFileImg().getBytes());
+                fileOutputStream.close();
+            }catch (FileNotFoundException e){
+                e.printStackTrace();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            image = "assets/style/img/"+productDto.getFileImg().getOriginalFilename();
+        }*/
         //entity
         Product product;
         if (productDto != null) {
@@ -94,6 +111,7 @@ public class ProductServiceImpl implements ProductService {
                 product.setUpdatedDate(new Date());
                 product.setProductType(productType);
                 product.setBrand(brand);
+                //product.setImage(image);
             }else {
                 product = productRepository.findById(productDto.getId()).orElse(null);
                 if (product != null){
@@ -102,6 +120,7 @@ public class ProductServiceImpl implements ProductService {
                     data.setUpdatedDate(new Date());
                     data.setProductType(productType); // chỗ này do có thể thay đôi nên set lại thôi, data ms lấy ở trên r
                     data.setBrand(brand);
+                   // data.setImage(image);
                     product = data;
                 }
             }
@@ -135,6 +154,7 @@ public class ProductServiceImpl implements ProductService {
         if (product != null) {
             productRepository.delete(product);
             return true;
+            //xoa
         }
         return false;
     }

@@ -37,24 +37,28 @@ public class OderServiceImpl implements OrderService {
         Order order;
         OderDTO oderDTO = (OderDTO) object;
         if (oderDTO != null){
-            //bajn giai thich cho mk cai dong nay
-            // Nếu có userId thì truy vấn lấy thông tin user ko có thì null,null cũng đặt dc đúng k, uhm
             User user = AppUtil.NVL(oderDTO.getUserId()) != 0L ? userRepository.findById(oderDTO.getUserId()).orElse(null) : null;
+            // Nếu có userId thì truy vấn lấy thông tin user ko có thì null,
+            // null cũng đặt dc đơn hàng
             if (AppUtil.NVL(oderDTO.getId()) == 0L){
                 order = AppUtil.mapperEntAndDto(oderDTO, Order.class);
                 order.setCreatedDate(new Date());
                 order.setUpdatedDate(new Date());
                 order.setCode(AppUtil.generateOrderCode());
                 order.setUser(user);
-            }else {
+            }
+            //đã đăng nhập
+            else {
                 Order data = orderRepository.findById(oderDTO.getId()).orElse(null);
                 if (data == null){
                     return null;
                 }
+                //thêm mới đơn hàng
                 order = AppUtil.mapperEntAndDto(oderDTO, Order.class);
                 order.setCode(data.getCode());
                 order.setUpdatedDate(new Date());
                 order.setUser(user);
+                //Thêm cả cái cart vào đây ????
             }
             return AppUtil.mapperEntAndDto(orderRepository.save(order), OderDTO.class);
         } // để test đã bạn, cái admin vẫn lỗi
@@ -70,7 +74,6 @@ public class OderServiceImpl implements OrderService {
 
     @Override
     public Boolean delete(HttpServletRequest request, Long id) {
-        //cái này delete giống những cái khác sau t viết
         Order oder = orderRepository.findById(id).orElse(null);
         if(oder != null){
             orderRepository.delete(oder);
@@ -80,6 +83,7 @@ public class OderServiceImpl implements OrderService {
         return false;
     }
 
+    //tìm kiếm đơn hàng theo IdUser
     @Override
     public List<OderDTO> findByUserId(HttpServletRequest request, Long id) {
         List<Order> oder = orderRepository.findAllByUserId(id);

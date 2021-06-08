@@ -4,6 +4,7 @@ import com.datn.dto.ProductDto;
 import com.datn.service.iservice.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,5 +24,10 @@ public class CartController {
     @PostMapping("")
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto){
         return ResponseEntity.ok().body(cartService.saveOrUpdate(request, dto));
+    }
+
+    @GetMapping("/get-by-user/{username}")
+    public ResponseEntity findAll(HttpServletRequest request, @PathVariable String username){
+        return ResponseEntity.ok().body(cartService.getByUser(request, username));
     }
 }

@@ -2,14 +2,11 @@ package com.datn.controller;
 
 import com.datn.dto.BrandDTO;
 import com.datn.dto.OderDTO;
-import com.datn.service.iservice.BrandService;
 import com.datn.service.iservice.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
-
 @RestController
 @RequestMapping("/oders")
 @CrossOrigin("http://localhost:4200")
@@ -22,10 +19,7 @@ public class OderController {
         return ResponseEntity.ok().body(orderService.findAll());
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity search(HttpServletRequest request, BrandDTO dto){
-//        return ResponseEntity.ok().body(orderService.search(dto));
-//    }
+
     @GetMapping("/user/{id}")
     public ResponseEntity findByUserId(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(orderService.findByUserId(request,id));

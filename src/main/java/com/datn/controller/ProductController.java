@@ -1,10 +1,10 @@
 package com.datn.controller;
 
 import com.datn.dto.ProductDto;
-import com.datn.dto.ProductInfoDTO;
-import com.datn.entity.ProductInfo;
 import com.datn.service.iservice.ProductService;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +52,7 @@ public class ProductController {
     }
 
 
-    @PostMapping("")
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto){
         return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
     }

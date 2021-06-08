@@ -5,6 +5,7 @@ import com.datn.entity.ProductInfo;
 import com.datn.entity.ProductType;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class ProductDto extends BaseDto{
     private List<SizeDto> sizeList;
     private List<ColorDTO> coloList;
     private Long cartId;
+    private MultipartFile fileImg;
 
     public ProductDto() {}
 }
