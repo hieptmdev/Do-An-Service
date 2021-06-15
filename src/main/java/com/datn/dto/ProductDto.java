@@ -1,5 +1,4 @@
 package com.datn.dto;
-
 import com.datn.entity.Brand;
 import com.datn.entity.ProductInfo;
 import com.datn.entity.ProductType;
@@ -29,6 +28,8 @@ public class ProductDto extends BaseDto{
     private List<ColorDTO> coloList;
     private Long cartId;
     private MultipartFile fileImg;
+    private Long productInfoId;
+    private Long quantity;
 
     public ProductDto() {}
 }

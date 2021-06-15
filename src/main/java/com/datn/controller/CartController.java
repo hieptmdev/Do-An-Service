@@ -8,6 +8,8 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/carts")
@@ -29,5 +31,18 @@ public class CartController {
     @GetMapping("/get-by-user/{username}")
     public ResponseEntity findAll(HttpServletRequest request, @PathVariable String username){
         return ResponseEntity.ok().body(cartService.getByUser(request, username));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
+        Map<String, String> responseData = new HashMap<>();
+        String message;
+        Boolean result = cartService.delete(request, id);
+        if (result){
+            message = "Delete success!";
+            responseData.put("message", message);
+            return ResponseEntity.ok().body(responseData);
+        }
+        return ResponseEntity.notFound().build();
     }
 }

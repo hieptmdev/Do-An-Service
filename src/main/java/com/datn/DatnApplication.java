@@ -11,7 +11,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 public class DatnApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DatnApplication.class, args);
+
+        SpringApplication.run(DatnApplication.class, args
+        );
     }
 
 }

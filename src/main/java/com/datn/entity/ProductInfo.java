@@ -23,7 +23,7 @@ public class ProductInfo extends BaseEntity{
     @ManyToOne
     private Size size; // kích cỡ
     private String image; // ảnh
-    private Long numberProduct; // số sản phẩm
+    private Long numberProduct; // số sản phẩm - so luong kho
 
     public ProductInfo() {}
 }

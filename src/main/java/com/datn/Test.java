@@ -7,4 +7,3 @@ public class Test {
         System.out.println(new BCryptPasswordEncoder().encode("123456"));
     }
 }
-// đây này,

@@ -2,6 +2,7 @@ package com.datn.service;
 
 import com.datn.dto.*;
 import com.datn.entity.Brand;
+import com.datn.entity.ImageModel;
 import com.datn.entity.Product;
 import com.datn.entity.ProductType;
 import com.datn.repository.BrandRepository;
@@ -80,9 +81,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
-//        String image = null;
-        /*if (productDto.getFileImg() != null){
+        //đây là mình đang khai báo cái image của product
+        //cái đoạn này ok chưa b, copy nguyên cái test của bn thì chắc ok
+        String image = null; // cái nàu chỉ là biến cục bộ trong hàm chứ có phải cảu product đâu @@
+        if (productDto.getFileImg() != null){
+        //cái if này k hiểu cho lắm b
+            //nó ko có data thì nó get ra giá trị j,k có thì null chứ sao :((
+            // uhm null, thì phỉa kiểm tra xem data bn gửi về có file ko chứ, ko có file thì lưu kiểu j
+            //coi như nó có giá trị, nó nhảy vào try
             try {
+                //nó sẽ lưu vào trong này,ok chưa; tiếp đi
                 File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
                 FileOutputStream fileOutputStream;
                 fileOutputStream=new FileOutputStream(newFile);
@@ -93,8 +101,12 @@ public class ProductServiceImpl implements ProductService {
             }catch (IOException e){
                 e.printStackTrace();
             }
+            //sau đó bạn gán giá trị image của product = với cái đường dẫn assets/style/img/
+            //  assets/style/img/ + tên file mà bên fontend n gửi lên như này
+            //VD : image = "assets/style/img/5.jpg" nó sẽ được lưu trong database như này đúng k
+
             image = "assets/style/img/"+productDto.getFileImg().getOriginalFilename();
-        }*/
+        }
         //entity
         Product product;
         if (productDto != null) {
@@ -104,14 +116,17 @@ public class ProductServiceImpl implements ProductService {
             Brand brand = AppUtil.NVL(productDto.getBrandId()) == 0L ? null :
                     brandRepository.findById(productDto.getBrandId()).orElse(null);
 
-            //Luw
+            //Lưu mới product
             if (AppUtil.NVL(productDto.getId()) == 0L) {
                 product = AppUtil.mapperEntAndDto(productDto, Product.class);
                 product.setCreatedDate(new Date());
                 product.setUpdatedDate(new Date());
                 product.setProductType(productType);
                 product.setBrand(brand);
-                //product.setImage(image);
+                //thế thì cái chỗ này nó có cần setlaij Image k
+                // ko set lai vào sao lưu
+                //Vậy là tổng thẻ là coi như csai product này n k lỗi về phía
+                product.setImage(image);
             }else {
                 product = productRepository.findById(productDto.getId()).orElse(null);
                 if (product != null){
@@ -120,7 +135,7 @@ public class ProductServiceImpl implements ProductService {
                     data.setUpdatedDate(new Date());
                     data.setProductType(productType); // chỗ này do có thể thay đôi nên set lại thôi, data ms lấy ở trên r
                     data.setBrand(brand);
-                   // data.setImage(image);
+                   data.setImage(image);
                     product = data;
                 }
             }
@@ -134,13 +149,13 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id).orElse(null);
         if (product != null){
             ProductDto productDto = AppUtil.mapperEntAndDto(product, ProductDto.class);
-            /*productDto.setSizeList(product.getProductInfoList()
-                    .stream()
-                    .map(prodInfo -> AppUtil.mapperEntAndDto(prodInfo.getSize(), SizeDto.class))
-                    .collect(Collectors.toList()));*/
             productDto.setColoList(product.getProductInfoList()
                     .stream()
-                    .map(productInfo -> AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class))
+                    .map(productInfo -> {
+                        ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                        colorDTO.setProductInfoId(productInfo.getId());
+                        return colorDTO;
+                    })
                     .collect(Collectors.toList())
             );
             return productDto;

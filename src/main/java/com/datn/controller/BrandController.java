@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/brands")
@@ -26,7 +28,6 @@ public class BrandController {
     public ResponseEntity search(HttpServletRequest request, BrandDTO dto){
         return ResponseEntity.ok().body(brandService.search(dto));
    }
-
     @GetMapping("/{id}")
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(brandService.findById(request, id));
@@ -35,14 +36,15 @@ public class BrandController {
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody BrandDTO dto){
         return ResponseEntity.ok().body(brandService.saveOrUpdate(request, dto));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
+        Map<String, String> responseData = new HashMap<>();
         String message;
         Boolean result = brandService.delete(request, id);
         if (result){
             message = "Delete success!";
-            return ResponseEntity.ok().body(message);
+            responseData.put("message", message);
+            return ResponseEntity.ok().body(responseData);
         }
         return ResponseEntity.notFound().build();
     }

@@ -9,6 +9,7 @@ import lombok.Setter;
 public class ColorDTO extends  BaseDto{
     private String code;
     private String name;
+    private Long productInfoId;
 
     public ColorDTO() {}
 }

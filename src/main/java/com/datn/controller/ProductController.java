@@ -2,13 +2,14 @@ package com.datn.controller;
 
 import com.datn.dto.ProductDto;
 import com.datn.service.iservice.ProductService;
-import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/products")
@@ -52,7 +53,7 @@ public class ProductController {
     }
 
 
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto){
         return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
     }
@@ -60,11 +61,13 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
+        Map<String, String> responseData = new HashMap<>();
         String message;
         Boolean result = productService.delete(request, id);
         if (result){
             message = "Delete success!";
-            return ResponseEntity.ok().body(message);
+            responseData.put("message",message);
+            return ResponseEntity.ok().body(responseData);
         }
         return ResponseEntity.notFound().build();
     }

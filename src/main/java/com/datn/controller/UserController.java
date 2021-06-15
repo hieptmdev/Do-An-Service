@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -33,11 +35,13 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
+        Map<String, String> responseData = new HashMap<>();
         String message;
         Boolean result = userService.delete(request, id);
         if (result){
             message = "Delete success!";
-            return ResponseEntity.ok().body(message);
+            responseData.put("message", message);
+            return ResponseEntity.ok().body(responseData);
         }
         return ResponseEntity.notFound().build();
     }

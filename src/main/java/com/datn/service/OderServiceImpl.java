@@ -1,15 +1,18 @@
 package com.datn.service;
-
 import com.datn.dto.BaseDto;
+import com.datn.dto.BrandDTO;
 import com.datn.dto.OderDTO;
+import com.datn.dto.ProductDto;
+import com.datn.entity.Cart;
 import com.datn.entity.Order;
+import com.datn.entity.Product;
 import com.datn.entity.User;
+import com.datn.repository.CartRepository;
 import com.datn.repository.OrderRepository;
 import com.datn.repository.UserRepository;
 import com.datn.service.iservice.OrderService;
 import com.datn.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,20 +27,23 @@ public class OderServiceImpl implements OrderService {
     private UserRepository userRepository;
     @Autowired
     private OrderRepository orderRepository;
+    @Autowired
+    private CartRepository cartRepository;
+
     @Override
-    public  List<OderDTO> findAll() {
+    public List<OderDTO> findAll() {
         return orderRepository.findAll()
                 .stream()
                 .map(obj -> AppUtil.mapperEntAndDto(obj, OderDTO.class))
                 .collect(Collectors.toList());
     }
-
     @Override
     public OderDTO saveOrUpdate(HttpServletRequest request, Object object) {
         Order order;
         OderDTO oderDTO = (OderDTO) object;
         if (oderDTO != null){
             User user = AppUtil.NVL(oderDTO.getUserId()) != 0L ? userRepository.findById(oderDTO.getUserId()).orElse(null) : null;
+            Cart cart = AppUtil.NVL(oderDTO.getCartId()) != 0L ? cartRepository.findById(oderDTO.getCartId()).orElse(null) : null;
             // Nếu có userId thì truy vấn lấy thông tin user ko có thì null,
             // null cũng đặt dc đơn hàng
             if (AppUtil.NVL(oderDTO.getId()) == 0L){
@@ -92,4 +98,5 @@ public class OderServiceImpl implements OrderService {
         }
         return  null;
     }
+
 }

@@ -7,19 +7,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/oders")
 @CrossOrigin("http://localhost:4200")
 public class OderController {
     @Autowired
     OrderService orderService;
-
     @GetMapping("/all")
-    public ResponseEntity findAll(){
+    public ResponseEntity findAll(HttpServletRequest request){
         return ResponseEntity.ok().body(orderService.findAll());
     }
-
-
     @GetMapping("/user/{id}")
     public ResponseEntity findByUserId(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(orderService.findByUserId(request,id));
@@ -40,11 +40,13 @@ public class OderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
+        Map<String, String> responseData = new HashMap<>();
         String message;
         Boolean result = orderService.delete(request, id);
         if (result){
             message = "Delete success!";
-            return ResponseEntity.ok().body(message);
+            responseData.put("message", message);
+            return ResponseEntity.ok().body(responseData);
         }
         return ResponseEntity.notFound().build();
     }

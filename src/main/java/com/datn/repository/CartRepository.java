@@ -7,5 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    Cart findByUser(User user);
+    Cart findByUser(User user); // tham số truyeenfn vào là User
 }

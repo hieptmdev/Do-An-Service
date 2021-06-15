@@ -10,11 +10,14 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/pay")
@@ -35,7 +38,9 @@ public class PaymentController {
     }
 
     @PostMapping("/pay")
-    public String pay(HttpServletRequest request,@RequestParam("price") double price ){
+    public ResponseEntity<Map<String, String>> pay(HttpServletRequest request, @RequestParam("price") double price ){
+        Map<String, String> responseData = new HashMap<>();
+
         String cancelUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_CANCEL;
         String successUrl = Utils.getBaseURL(request) + "/" + URL_PAYPAL_SUCCESS;
         try {
@@ -49,13 +54,18 @@ public class PaymentController {
                     successUrl);
             for(Links links : payment.getLinks()){
                 if(links.getRel().equals("approval_url")){
-                    return "redirect:" + links.getHref();
+                    responseData.put("redirect", links.getHref());
                 }
             }
+
+            return ResponseEntity.ok(responseData);
         } catch (PayPalRESTException e) {
             log.error(e.getMessage());
         }
-        return "redirect:/";
+
+        responseData.put("redirect", "");
+
+        return ResponseEntity.ok(responseData);
     }
 
     @GetMapping(URL_PAYPAL_CANCEL)

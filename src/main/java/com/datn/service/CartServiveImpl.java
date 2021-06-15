@@ -3,13 +3,12 @@ package com.datn.service;
 import com.datn.config.JwtConfig;
 import com.datn.dto.BaseDto;
 import com.datn.dto.CartDTO;
+import com.datn.dto.OderDTO;
 import com.datn.dto.ProductDto;
-import com.datn.entity.Cart;
-import com.datn.entity.CartDetaill;
-import com.datn.entity.Product;
-import com.datn.entity.User;
+import com.datn.entity.*;
 import com.datn.repository.CartDetailRepository;
 import com.datn.repository.CartRepository;
+import com.datn.repository.ProductInfoRepository;
 import com.datn.repository.UserRepository;
 import com.datn.service.iservice.CartService;
 import com.datn.util.AppUtil;
@@ -20,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiveImpl implements CartService {
@@ -31,6 +31,8 @@ public class CartServiveImpl implements CartService {
     private UserRepository userRepository;
     @Autowired
     private CartDetailRepository cartDetailRepository;
+    @Autowired
+    private ProductInfoRepository productInfoRepository;
 
     @Override
     public <T extends BaseDto> List<T> findAll() {
@@ -42,15 +44,18 @@ public class CartServiveImpl implements CartService {
     public CartDTO saveOrUpdate(HttpServletRequest request, Object object) {
         //chuyển Obj -> DTO
         ProductDto productDto = (ProductDto) object;
+        List<ProductInfo> productInfoList = new ArrayList<>();
         CartDetaill cartDetaill;
         Cart cart;
         User user = null;
         String authorization = request.getHeader("Authorization");
-
         if (!AppUtil.isNullOrEmpty(authorization)){
             String token = authorization.replace("Bearer ", "");
             String username = jwtConfig.getUsernameFromJwtToken(token);
             user = userRepository.findByUsername(username);
+        }
+        if (AppUtil.NVL(productDto.getProductInfoId()) == 0L){
+            productInfoList = productInfoRepository.findAllByProductId(productDto.getId());
         }
         //đã đăng nhập
         if (user != null){
@@ -58,17 +63,17 @@ public class CartServiveImpl implements CartService {
             //trong cart khác null
             if (cart != null){
                 if (cart.getCartDetaills() != null) {
-                    CartDetaill d1 = cart.getCartDetaills().stream().filter(cd -> cd.getProduct().getId() == productDto.getId()).findFirst().orElse(null);
+                    CartDetaill d1 = cart.getCartDetaills().stream().filter(cd -> cd.getProductInfo().getId() == productDto.getProductInfoId()).findFirst().orElse(null);
                     if (d1 != null) {
                         cart.getCartDetaills().stream().forEach(cd -> {
-                            if (cd.getProduct().getId() == productDto.getId()) {
+                            if (cd.getProductInfo().getId() == productDto.getProductInfoId()) {
                                 cd.setNumberPro(cd.getNumberPro() + 1);
                             }
                         });
                     }else {
                         cartDetaill = new CartDetaill();
-                        cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                        cartDetaill.setNumberPro(1L);
+                        setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                        cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                         cartDetaill.setCart(cart);
                         cart.getCartDetaills().add(cartDetailRepository.save(cartDetaill));
                     }
@@ -77,8 +82,8 @@ public class CartServiveImpl implements CartService {
                 else {
                     cartDetaill = new CartDetaill();
                     //thêm sản phẩm vào trong cartdetail
-                    cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                    cartDetaill.setNumberPro(1L);
+                    setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                    cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                     cartDetaill.setCart(cart);
                     //tạo ra 1 lsist
                     List<CartDetaill> data = new ArrayList<>();
@@ -98,8 +103,8 @@ public class CartServiveImpl implements CartService {
                 cart = cartRepository.save(cart);
                 cartDetaill = new CartDetaill();
                 //lưu product -> chuyển Ety->dto
-                cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                cartDetaill.setNumberPro(1L);
+                setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                 cartDetaill.setCart(cart);
                 List<CartDetaill> data = new ArrayList<>();
                 data.add(cartDetailRepository.save(cartDetaill));
@@ -115,8 +120,8 @@ public class CartServiveImpl implements CartService {
                 cart = new Cart();
                 cart = cartRepository.save(cart);
                 cartDetaill = new CartDetaill();
-                cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                cartDetaill.setNumberPro(1L);
+                setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                 cartDetaill.setCart(cart);
                 List<CartDetaill> data = new ArrayList<>();
                 data.add(cartDetailRepository.save(cartDetaill));
@@ -128,21 +133,21 @@ public class CartServiveImpl implements CartService {
             cart = cartRepository.findById(productDto.getCartId()).orElse(null);
             if (cart != null){
                 cartDetaill = new CartDetaill();
-                cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
+                setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                 cartDetaill.setCart(cart);
-                cartDetaill.setNumberPro(1L);
+                cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                 if (cart.getCartDetaills() != null) {
                     CartDetaill d1 = cart.getCartDetaills().stream().filter(cd -> cd.getId() == productDto.getId()).findFirst().orElse(null);
                     if (d1 != null) {
                         cart.getCartDetaills().stream().forEach(cd -> {
-                            if (cd.getProduct().getId() == productDto.getId()) {
+                            if (cd.getProductInfo().getId() == productDto.getProductInfoId()) {
                                 cd.setNumberPro(cd.getNumberPro() + 1);
                             }
                         });
                     }else {
                         cartDetaill = new CartDetaill();
-                        cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                        cartDetaill.setNumberPro(1L);
+                        setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                        cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                         cartDetaill.setCart(cart);
                         cart.getCartDetaills().add(cartDetailRepository.save(cartDetaill));
                     }
@@ -151,8 +156,8 @@ public class CartServiveImpl implements CartService {
                 else {
                     cartDetaill = new CartDetaill();
                     //thêm sản phẩm vào trong cartdetail
-                    cartDetaill.setProduct(AppUtil.mapperEntAndDto(productDto, Product.class));
-                    cartDetaill.setNumberPro(1L);
+                    setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
+                    cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                     cartDetaill.setCart(cart);
                     //tạo ra 1 lsist
                     List<CartDetaill> data = new ArrayList<>();
@@ -174,20 +179,30 @@ public class CartServiveImpl implements CartService {
 
     @Override
     public Boolean delete(HttpServletRequest request, Long id) {
-        return null;
+        Cart cart = cartRepository.findById(id).orElse(null);
+        if (cart != null) {
+            cartRepository.delete(cart);
+            return true;
+            //xoa
+        }
+        return false;
     }
-
     @Override
     public CartDTO getByUser(HttpServletRequest request, String username) {
         User user = userRepository.findByUsername(username);
-        if (user != null){
-            Cart cart = cartRepository.findByUser(user);
-            if (cart != null){
-                CartDTO dto = AppUtil.mapperEntAndDto(cart, CartDTO.class);
-                return dto;
+        Cart cart =  cartRepository.findByUser(user);
+
+        return  AppUtil.mapperEntAndDto(cart, CartDTO.class); //test đã :v
+    }
+
+    public void setProductInfo(CartDetaill cartDetaill, List<ProductInfo> productInfoList, Long productInfoId){
+        if (AppUtil.NVL(productInfoId) == 0l){
+            if(productInfoList.size() > 0){
+                cartDetaill.setProductInfo(productInfoList.get(0));
+                return;
             }
-            return null;
         }
-        return null;
+        cartDetaill.setProductInfo(productInfoRepository.findById(productInfoId).orElse(null));
+        return;
     }
 }

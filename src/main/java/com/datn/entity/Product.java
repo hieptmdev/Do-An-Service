@@ -35,6 +35,5 @@ public class Product extends BaseEntity{
     @ManyToOne
     private Brand brand;
     //nhieu sp thuoc 1 brand
-
     public Product(){}
 }
