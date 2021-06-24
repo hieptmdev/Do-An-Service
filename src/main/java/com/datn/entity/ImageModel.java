@@ -17,14 +17,9 @@ public class ImageModel {
         this.name = name;
         this.thumbnail = thumbnail;
     }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String thumbnail;
-
-
-
-
 }

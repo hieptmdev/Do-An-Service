@@ -9,8 +9,10 @@ import java.util.List;
 @Getter
 @Setter
 public class OderDetailDTO  extends  BaseDto{
+    private Long orderId;
     private Long numberProduct;
-    // private ProductInfo productInfo;
-    private String productName;
-
+    private String productInfoProductName;
+    private String productInfoColorName;
+    private String productInfoProductProductTypeName;
+    private Long productInfoProductPriceSell;
 }

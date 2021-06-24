@@ -28,6 +28,7 @@ public class UserController {
         return ResponseEntity.ok().body(userService.findById(request, id));
     }
 
+    //Đăng ký
     @PostMapping("")
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody UserDto dto){
         return ResponseEntity.ok().body(userService.saveOrUpdate(request, dto));

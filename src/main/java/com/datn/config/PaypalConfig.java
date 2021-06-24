@@ -25,7 +25,6 @@ public class PaypalConfig {
         sdkConfig.put("mode", mode);
         return sdkConfig;
     }
-
     @Bean
     public OAuthTokenCredential authTokenCredential(){
         return new OAuthTokenCredential(clientId, clientSecret, paypalSdkConfig());

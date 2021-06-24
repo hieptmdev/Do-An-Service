@@ -34,6 +34,5 @@ public class Product extends BaseEntity{
     //nhiều sản phẩm cùng 1 loại
     @ManyToOne
     private Brand brand;
-    //nhieu sp thuoc 1 brand
     public Product(){}
 }

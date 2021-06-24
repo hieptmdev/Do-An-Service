@@ -89,11 +89,24 @@ public class ProductTypeImpl implements ProductTypeService{
         return false;
     }
 
+    //lấy sản phẩm theo thể loại
     @Override
-    public List<ProductTypeDTO> findAllCategory(HttpServletRequest request, Long id) {
+    public List<ProductDto> findAllCategory(HttpServletRequest request, Long id) {
         return productTypeRepository.getAllByCategory(id)
                 .stream()
-                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductTypeDTO.class)).
+                .map(obj -> {
+                    ProductDto dto = AppUtil.mapperEntAndDto(obj, ProductDto.class);
+                    dto.setColoList(obj.getProductInfoList()
+                            .stream()
+                            .map(productInfo -> {
+                                ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                                colorDTO.setProductInfoId(productInfo.getId());
+                                return colorDTO;
+                            })
+                            .collect(Collectors.toList())
+                    );
+                    return dto;
+                }).
                 collect(Collectors.toList());
     }
 }

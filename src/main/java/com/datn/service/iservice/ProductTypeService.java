@@ -8,5 +8,5 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface ProductTypeService extends BaseService{
-    List<ProductTypeDTO> findAllCategory(HttpServletRequest request, Long id);
+    List<ProductDto> findAllCategory(HttpServletRequest request, Long id);
 }

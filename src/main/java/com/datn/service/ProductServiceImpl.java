@@ -1,10 +1,7 @@
 package com.datn.service;
 
 import com.datn.dto.*;
-import com.datn.entity.Brand;
-import com.datn.entity.ImageModel;
-import com.datn.entity.Product;
-import com.datn.entity.ProductType;
+import com.datn.entity.*;
 import com.datn.repository.BrandRepository;
 import com.datn.repository.ProductRepository;
 import com.datn.repository.ProductTypeRepository;
@@ -12,6 +9,7 @@ import com.datn.service.iservice.ProductService;
 import com.datn.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
@@ -31,22 +29,32 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private BrandRepository brandRepository;
 
-    /**
-     * Lấy all sản phẩm ko phân trang
-     * @return
-     */
     @Override
     public List<ProductDto> findAll() {
         List<ProductDto> productDtoList;
-        List<Product> productList = productRepository.findAll(); // lấy danh sách product dạng entity, findAll() - hàm sẵn do jpa cung cấp
-        if (!AppUtil.isNullOrEmpty(productList)){ // kiểm tra productList != null
+        List<Product> productList = productRepository.findAll();
+        if (!AppUtil.isNullOrEmpty(productList)){
             productDtoList = productList.stream()
-                    .map(ent -> AppUtil.mapperEntAndDto(ent, ProductDto.class)) // method mapperEntAndDto dùng để chuyển đổi data từ entity sang dto or ngược lại tùy theo mục đích
-                    .collect(Collectors.toList()); // chuyển đổi productList sang list mới ở dạng dto
+                    //chuyển từ ent => dto
+                    .map(ent -> {
+                        ProductDto dto = AppUtil.mapperEntAndDto(ent, ProductDto.class);
+                        dto.setColoList(ent.getProductInfoList()
+                                .stream()
+                                .map(productInfo -> {
+                                    ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                                    colorDTO.setProductInfoId(productInfo.getId());
+                                    return colorDTO;
+                                })
+                                .collect(Collectors.toList())
+                        );
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
             return productDtoList; // trả kết quả
         }
         return null;
     }
+    //sản phẩm new
     @Override
     public List<ProductDto> findNew() {
         return productRepository.getProductNew()
@@ -54,6 +62,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class))
                 .collect(Collectors.toList());
     }
+    //sản phẩm sale
     @Override
     public List<ProductDto> findSale() {
         return productRepository.getProductSale()
@@ -62,35 +71,15 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public List<ProductDto> findAllBrand(HttpServletRequest request, Long id) {
-        return productRepository.getAllByBrands(id)
-                .stream()
-                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class)).
-                        collect(Collectors.toList());
-    }
 
-    @Override
-    public List<ProductDto> findFillter(HttpServletRequest request, ProductDto dto) {
-        return productRepository.getProductByBrandAndProductType(dto.getBrandId(), dto.getProductTypeId())
-                .stream()
-                .map(obj -> AppUtil.mapperEntAndDto(obj, ProductDto.class))
-                .collect(Collectors.toList());
-    }
-
+    //Lưu và update SP
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
-        //đây là mình đang khai báo cái image của product
-        //cái đoạn này ok chưa b, copy nguyên cái test của bn thì chắc ok
-        String image = null; // cái nàu chỉ là biến cục bộ trong hàm chứ có phải cảu product đâu @@
+        String image = null;
+
         if (productDto.getFileImg() != null){
-        //cái if này k hiểu cho lắm b
-            //nó ko có data thì nó get ra giá trị j,k có thì null chứ sao :((
-            // uhm null, thì phỉa kiểm tra xem data bn gửi về có file ko chứ, ko có file thì lưu kiểu j
-            //coi như nó có giá trị, nó nhảy vào try
             try {
-                //nó sẽ lưu vào trong này,ok chưa; tiếp đi
                 File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
                 FileOutputStream fileOutputStream;
                 fileOutputStream=new FileOutputStream(newFile);
@@ -98,14 +87,10 @@ public class ProductServiceImpl implements ProductService {
                 fileOutputStream.close();
             }catch (FileNotFoundException e){
                 e.printStackTrace();
-            }catch (IOException e){
+            }catch (IOException e) {
                 e.printStackTrace();
             }
-            //sau đó bạn gán giá trị image của product = với cái đường dẫn assets/style/img/
-            //  assets/style/img/ + tên file mà bên fontend n gửi lên như này
-            //VD : image = "assets/style/img/5.jpg" nó sẽ được lưu trong database như này đúng k
-
-            image = "assets/style/img/"+productDto.getFileImg().getOriginalFilename();
+            //image =productDto.setFileImg( "assets/style/img/"+getOriginalFilename());
         }
         //entity
         Product product;
@@ -123,9 +108,6 @@ public class ProductServiceImpl implements ProductService {
                 product.setUpdatedDate(new Date());
                 product.setProductType(productType);
                 product.setBrand(brand);
-                //thế thì cái chỗ này nó có cần setlaij Image k
-                // ko set lai vào sao lưu
-                //Vậy là tổng thẻ là coi như csai product này n k lỗi về phía
                 product.setImage(image);
             }else {
                 product = productRepository.findById(productDto.getId()).orElse(null);
@@ -144,6 +126,7 @@ public class ProductServiceImpl implements ProductService {
         return null;
     }
 
+    // tìm kiếm sp theo Id
     @Override
     public ProductDto findById(HttpServletRequest request, Long id) {
         Product product = productRepository.findById(id).orElse(null);
@@ -162,6 +145,50 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
     }
+    //tìm kiếm sản phẩm theo hãng
+    @Override
+    public List<ProductDto> findAllBrand(HttpServletRequest request, Long id) {
+        return productRepository.getAllByBrands(id)
+                .stream()
+                .map(obj ->{
+                    ProductDto dto = AppUtil.mapperEntAndDto(obj, ProductDto.class);
+                    dto.setColoList(obj.getProductInfoList()
+                            .stream()
+                            .map(
+                                    productInfo -> {
+                                        ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                                        colorDTO.setProductInfoId(productInfo.getId());
+                                        return colorDTO;
+                                    })
+                            .collect(Collectors.toList())
+                    );
+                    return dto;
+                }).
+                        collect(Collectors.toList());
+    }
+
+    //lọc sản phẩm theo hãng và thể loại
+    @Override
+    public List<ProductDto> findFillter(HttpServletRequest request, ProductDto dto) {
+        return productRepository.getProductByBrandAndProductType(dto.getBrandId(), dto.getProductTypeId())
+                .stream()
+                .map(obj ->{
+                    ProductDto productDto = AppUtil.mapperEntAndDto(obj, ProductDto.class);
+                    productDto.setColoList(obj.getProductInfoList()
+                            .stream()
+                            .map(
+                                    productInfo -> {
+                                        ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                                        colorDTO.setProductInfoId(productInfo.getId());
+                                        return colorDTO;
+                                    })
+                            .collect(Collectors.toList())
+                    );
+                    return productDto;
+                }).
+                        collect(Collectors.toList());
+    }
+
 
     @Override
     public Boolean delete(HttpServletRequest request, Long id) {
@@ -174,11 +201,41 @@ public class ProductServiceImpl implements ProductService {
         return false;
     }
 
+    //tìm kiếm sp theo người dùng nhập
     @Override
     public List<ProductDto> search(HttpServletRequest request, ProductDto dto) {
         return productRepository.search(dto.getName().toLowerCase())
-                .stream().map(product -> AppUtil.mapperEntAndDto(product, ProductDto.class))
-                .collect(Collectors.toList());
+                .stream()
+                .map(obj ->{
+                    ProductDto productDto = AppUtil.mapperEntAndDto(obj, ProductDto.class);
+                    productDto.setColoList(obj.getProductInfoList()
+                            .stream()
+                            .map(
+                                    productInfo -> {
+                                        ColorDTO colorDTO = AppUtil.mapperEntAndDto(productInfo.getColor(), ColorDTO.class);
+                                        colorDTO.setProductInfoId(productInfo.getId());
+                                        return colorDTO;
+                                    })
+                            .collect(Collectors.toList())
+                    );
+                    return productDto;
+                }).
+                        collect(Collectors.toList());
     }
 
+    //Chi tiết product
+    @Override
+    public ProductDto searchDetailProduct(HttpServletRequest request, Long id) {
+        Product product = productRepository.findById(id).orElse(null);// 2 kiểu khác nhau sao convert
+        if(product !=null){
+            //id product khác null mới truyền vào
+//            return productRepository.selectproductDetail(product.getId())
+//                    .stream()
+//                    .map(detail -> AppUtil.mapperEntAndDto(detail,ProductInfoDTO.class))
+//                    .collect(Collectors.toList());
+            return AppUtil.mapperEntAndDto(product, ProductDto.class);
+        }
+        return null;
+
+    }
 }

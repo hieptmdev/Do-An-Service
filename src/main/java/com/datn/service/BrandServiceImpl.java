@@ -63,6 +63,7 @@ public class BrandServiceImpl implements BrandService {
         return null;
 
     }
+    //lấy sản phẩm theo thể loại
     @Override
     public BrandDTO findById(HttpServletRequest request, Long id) {
         Brand brand = brandRepository.findById(id).orElse(null);

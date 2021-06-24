@@ -3,11 +3,9 @@ package com.datn.entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 
 //Hóa đơn
@@ -23,10 +21,13 @@ public class Order extends BaseEntity{
     private Date deliveryDate; // ngày giao hàng
     private String deliveryAddress; // địa chỉ giao hàng
     private String phoneNumber; // số điện thoại người nhận hàng
+    private String usernameKH; //tên người mua nhập
     @Column(columnDefinition = "int default 0")
-    private Integer status; // trạng thái: 0 - Chuẩn bị hàng; 1 - Đang giao; 2 - Đã giao
+    private Integer status = 0; // trạng thái: 0 - Chuẩn bị hàng; 1 - Đang giao; 2 - Đã giao
     @ManyToOne
     private User user;
+    @OneToMany(mappedBy = "order")
+    private List<OrderDetail> orderDetails;
 
     public Order() {
     }

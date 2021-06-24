@@ -14,6 +14,7 @@ public class ProductTypeDTO extends BaseDto{
     private String code;
     private Long priceSell;
     private Long sale;
+
     public ProductTypeDTO() {
     }
 }

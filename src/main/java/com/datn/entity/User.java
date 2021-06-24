@@ -20,7 +20,8 @@ import java.util.Date;
     public class User extends BaseEntity implements UserDetails {
     @Column(nullable = false)
     private String name;
-    private String code;
+    @Column(columnDefinition = "int default 0")
+    private Integer code = 0; //0-Khách 1-Nhân viên 2-Admin
     private Date dob; // ngày sinh
     private String email;
     private String phoneNumber; // số điện thoại
@@ -30,7 +31,7 @@ import java.util.Date;
     @Column(nullable = false)
     private String password;
     @Column(columnDefinition = "boolean default false")
-    private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false, bạn sửa đi, cả tôi sợ sai vcl 
+    private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false,
     
     public User() {}
 

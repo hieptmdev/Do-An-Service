@@ -29,7 +29,8 @@ public class ProductDto extends BaseDto{
     private Long cartId;
     private MultipartFile fileImg;
     private Long productInfoId;
-    private Long quantity;
+    private Long quantity;//số lượng chọn
+    private List<ProductInfoDTO> productInfoList;
 
     public ProductDto() {}
 }

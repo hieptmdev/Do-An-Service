@@ -28,6 +28,7 @@ public class BrandController {
     public ResponseEntity search(HttpServletRequest request, BrandDTO dto){
         return ResponseEntity.ok().body(brandService.search(dto));
    }
+
     @GetMapping("/{id}")
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(brandService.findById(request, id));

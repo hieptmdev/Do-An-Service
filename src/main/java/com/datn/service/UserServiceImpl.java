@@ -37,7 +37,22 @@ public class UserServiceImpl implements UserService {
         public List<UserDto> findAll() {
             return userRepository.findAll()
                     .stream()
-                    .map(obj -> AppUtil.mapperEntAndDto(obj, UserDto.class))
+                    .map(obj ->
+                    {
+                        UserDto dto = AppUtil.mapperEntAndDto(obj, UserDto.class);
+                        switch (obj.getCode()) {
+                            case 0:
+                                dto.setCodeString("Khách Hàng");
+                                break;
+                            case 1:
+                                dto.setCodeString("Nhân Viên");
+                                break;
+                            case 2:
+                                dto.setCodeString("Quản Lý");
+                                break;
+                        }
+                        return dto;
+                    })
                     .collect(Collectors.toList());
         }
 
@@ -51,6 +66,8 @@ public class UserServiceImpl implements UserService {
                     user = AppUtil.mapperEntAndDto(userDto, User.class);
                     user.setCreatedDate(new Date());
                     user.setUpdatedDate(new Date());
+                    user.setIsAdminAccount(false);
+                    user.setCode(0);
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
                 }
                 //update
@@ -58,9 +75,9 @@ public class UserServiceImpl implements UserService {
                     user = userRepository.findById(userDto.getId()).orElse(null);
 
                     if (user != null){
-                        User dataUser = AppUtil.mapperEntAndDto(userDto,User.class); // dataBrand sau khi map đã có dủ hết data r
+                        User dataUser = AppUtil.mapperEntAndDto(userDto,User.class);
                         dataUser.setId(user.getId());
-                        dataUser.setUpdatedDate(new Date()); //
+                        dataUser.setUpdatedDate(new Date());
                         user= dataUser;
                     }
 
@@ -70,8 +87,6 @@ public class UserServiceImpl implements UserService {
             }
                 return  null;
         }
-
-
         @Override
         public UserDto findById(HttpServletRequest request, Long id) {
             User user = userRepository.findById(id).orElse(null);

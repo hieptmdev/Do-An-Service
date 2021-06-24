@@ -1,6 +1,8 @@
 package com.datn.service.iservice;
 
+import com.datn.dto.OderDTO;
 import com.datn.dto.ProductDto;
+import com.datn.dto.ProductInfoDTO;
 import com.datn.dto.ProductTypeDTO;
 import com.datn.entity.Product;
 
@@ -13,4 +15,5 @@ public interface ProductService extends BaseService{
     List<ProductDto>findSale();
     List<ProductDto> findAllBrand(HttpServletRequest request, Long id);
     List<ProductDto> findFillter(HttpServletRequest request, ProductDto dto);
+    ProductDto searchDetailProduct(HttpServletRequest request, Long id);
 }

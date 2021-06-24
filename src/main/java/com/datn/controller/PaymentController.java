@@ -22,7 +22,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/pay")
 @CrossOrigin("http://localhost:4200")
-@Controller
 public class PaymentController {
     public static final String URL_PAYPAL_SUCCESS = "pay/success";
     public static final String URL_PAYPAL_CANCEL = "pay/cancel";

@@ -3,7 +3,6 @@ package com.datn.service;
 import com.datn.config.JwtConfig;
 import com.datn.dto.BaseDto;
 import com.datn.dto.CartDTO;
-import com.datn.dto.OderDTO;
 import com.datn.dto.ProductDto;
 import com.datn.entity.*;
 import com.datn.repository.CartDetailRepository;
@@ -19,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartServiveImpl implements CartService {
@@ -48,7 +47,7 @@ public class CartServiveImpl implements CartService {
         CartDetaill cartDetaill;
         Cart cart;
         User user = null;
-        String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader("bn dAuthorization");
         if (!AppUtil.isNullOrEmpty(authorization)){
             String token = authorization.replace("Bearer ", "");
             String username = jwtConfig.getUsernameFromJwtToken(token);
@@ -56,6 +55,7 @@ public class CartServiveImpl implements CartService {
         }
         if (AppUtil.NVL(productDto.getProductInfoId()) == 0L){
             productInfoList = productInfoRepository.findAllByProductId(productDto.getId());
+            productDto.setProductInfoId(productInfoList.get(0).getId());
         }
         //đã đăng nhập
         if (user != null){
@@ -68,6 +68,7 @@ public class CartServiveImpl implements CartService {
                         cart.getCartDetaills().stream().forEach(cd -> {
                             if (cd.getProductInfo().getId() == productDto.getProductInfoId()) {
                                 cd.setNumberPro(cd.getNumberPro() + 1);
+                                cd.setTotalMoney(cd.getNumberPro() * cd.getProductInfo().getProduct().getPriceSell());
                             }
                         });
                     }else {
@@ -75,6 +76,7 @@ public class CartServiveImpl implements CartService {
                         setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                         cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                         cartDetaill.setCart(cart);
+                        cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                         cart.getCartDetaills().add(cartDetailRepository.save(cartDetaill));
                     }
                 }
@@ -85,12 +87,14 @@ public class CartServiveImpl implements CartService {
                     setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                     cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                     cartDetaill.setCart(cart);
+                    cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                     //tạo ra 1 lsist
                     List<CartDetaill> data = new ArrayList<>();
                     data.add(cartDetailRepository.save(cartDetaill));
                     cart.setCartDetaills(data);
                 }
                 cart.setTotalNumber((long) cart.getCartDetaills().size());
+                setTotalMonneyCart(cart);
                 //lưu mới thêm cartdeatail
                 cart = cartRepository.save(cart);
             }
@@ -106,10 +110,12 @@ public class CartServiveImpl implements CartService {
                 setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                 cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                 cartDetaill.setCart(cart);
+                cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                 List<CartDetaill> data = new ArrayList<>();
                 data.add(cartDetailRepository.save(cartDetaill));
                 cart.setCartDetaills(data);
                 cart.setTotalNumber((long) cart.getCartDetaills().size());
+                setTotalMonneyCart(cart);
                 cart = cartRepository.save(cart);
             }
             return AppUtil.mapperEntAndDto(cart, CartDTO.class);
@@ -123,10 +129,12 @@ public class CartServiveImpl implements CartService {
                 setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                 cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                 cartDetaill.setCart(cart);
+                cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                 List<CartDetaill> data = new ArrayList<>();
                 data.add(cartDetailRepository.save(cartDetaill));
                 cart.setCartDetaills(data);
                 cart.setTotalNumber((long) cart.getCartDetaills().size());
+                setTotalMonneyCart(cart);
                 cart = cartRepository.save(cart);
                 return AppUtil.mapperEntAndDto(cart, CartDTO.class);
             }
@@ -136,6 +144,7 @@ public class CartServiveImpl implements CartService {
                 setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                 cartDetaill.setCart(cart);
                 cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
+                cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                 if (cart.getCartDetaills() != null) {
                     CartDetaill d1 = cart.getCartDetaills().stream().filter(cd -> cd.getId() == productDto.getId()).findFirst().orElse(null);
                     if (d1 != null) {
@@ -149,6 +158,7 @@ public class CartServiveImpl implements CartService {
                         setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                         cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                         cartDetaill.setCart(cart);
+                        cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                         cart.getCartDetaills().add(cartDetailRepository.save(cartDetaill));
                     }
                 }
@@ -159,12 +169,14 @@ public class CartServiveImpl implements CartService {
                     setProductInfo(cartDetaill, productInfoList, productDto.getProductInfoId());
                     cartDetaill.setNumberPro(productDto.getQuantity() != null ? productDto.getQuantity() : 1L);
                     cartDetaill.setCart(cart);
+                    cartDetaill.setTotalMoney(cartDetaill.getNumberPro() * cartDetaill.getProductInfo().getProduct().getPriceSell());
                     //tạo ra 1 lsist
                     List<CartDetaill> data = new ArrayList<>();
                     data.add(cartDetailRepository.save(cartDetaill));
                     cart.setCartDetaills(data);
                 }
                 cart.setTotalNumber((long) cart.getCartDetaills().size());
+                setTotalMonneyCart(cart);
                 cart = cartRepository.save(cart);
                 return AppUtil.mapperEntAndDto(cart, CartDTO.class);
             }
@@ -192,7 +204,7 @@ public class CartServiveImpl implements CartService {
         User user = userRepository.findByUsername(username);
         Cart cart =  cartRepository.findByUser(user);
 
-        return  AppUtil.mapperEntAndDto(cart, CartDTO.class); //test đã :v
+        return  AppUtil.mapperEntAndDto(cart != null ? cart : new Cart(), CartDTO.class); //test đã :v
     }
 
     public void setProductInfo(CartDetaill cartDetaill, List<ProductInfo> productInfoList, Long productInfoId){
@@ -204,5 +216,13 @@ public class CartServiveImpl implements CartService {
         }
         cartDetaill.setProductInfo(productInfoRepository.findById(productInfoId).orElse(null));
         return;
+    }
+
+    public void setTotalMonneyCart(Cart cart) {
+        AtomicReference<Long> total = new AtomicReference<>(0L);
+        cart.getCartDetaills().stream().forEach(cd -> {
+            total.updateAndGet(v -> v + cd.getTotalMoney());
+        });
+        cart.setTotalMonneyCart(total.get());
     }
 }

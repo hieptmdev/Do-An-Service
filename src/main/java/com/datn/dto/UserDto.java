@@ -17,6 +17,6 @@ public class UserDto extends BaseDto{
     private String username;
     private String password;
     private Boolean isAdminAccount; // loại tài khoản: ADMIN: true || CLIENT: false
-
+    private String codeString;
     public UserDto() {}
 }

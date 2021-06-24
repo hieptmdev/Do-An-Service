@@ -8,8 +8,9 @@ import lombok.Setter;
 public class ProductInfoDTO extends BaseDto{
     private Long productId;
     private String productName;
-    private Long number_product;
+    private Long numberProduct;
     private String colorId;
+    private String colorName;
 
     public ProductInfoDTO() {
     }
