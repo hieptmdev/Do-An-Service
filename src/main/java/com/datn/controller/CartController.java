@@ -37,7 +37,7 @@ public class CartController {
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
         Map<String, String> responseData = new HashMap<>();
         String message;
-        Boolean result = cartService.delete(request, id);
+        Boolean result = cartService.deleteCartDetail(request, id);
         if (result){
             message = "Delete success!";
             responseData.put("message", message);

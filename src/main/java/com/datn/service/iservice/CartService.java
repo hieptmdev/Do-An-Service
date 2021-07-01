@@ -9,4 +9,5 @@ import javax.servlet.http.HttpServletRequest;
 public interface CartService extends BaseService{
 
     CartDTO getByUser(HttpServletRequest request, String username);
+    Boolean deleteCartDetail(HttpServletRequest request, Long id);
 }

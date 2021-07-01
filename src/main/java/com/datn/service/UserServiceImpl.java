@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
                     user = AppUtil.mapperEntAndDto(userDto, User.class);
                     user.setCreatedDate(new Date());
                     user.setUpdatedDate(new Date());
-                    user.setIsAdminAccount(false);
+                    // user.setIsAdminAccount(false);
                     user.setCode(0);
                     user.setPassword(passwordEncoder.encode(user.getPassword()));
                 }

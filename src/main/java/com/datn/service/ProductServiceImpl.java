@@ -3,6 +3,7 @@ package com.datn.service;
 import com.datn.dto.*;
 import com.datn.entity.*;
 import com.datn.repository.BrandRepository;
+import com.datn.repository.ColorReponsitory;
 import com.datn.repository.ProductRepository;
 import com.datn.repository.ProductTypeRepository;
 import com.datn.service.iservice.ProductService;
@@ -28,7 +29,8 @@ public class ProductServiceImpl implements ProductService {
     private ProductTypeRepository productTypeRepository;
     @Autowired
     private BrandRepository brandRepository;
-
+    @Autowired
+    ColorReponsitory colorReponsitory;
     @Override
     public List<ProductDto> findAll() {
         List<ProductDto> productDtoList;
@@ -78,24 +80,23 @@ public class ProductServiceImpl implements ProductService {
         ProductDto productDto = (ProductDto) object;
         String image = null;
 
-        if (productDto.getFileImg() != null){
-            try {
-                File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
-                FileOutputStream fileOutputStream;
-                fileOutputStream=new FileOutputStream(newFile);
-                fileOutputStream.write(productDto.getFileImg().getBytes());
-                fileOutputStream.close();
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }catch (IOException e) {
-                e.printStackTrace();
-            }
-            //image =productDto.setFileImg( "assets/style/img/"+getOriginalFilename());
-        }
+//        if (productDto.getFileImg() != null){
+//            try {
+//                File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
+//                FileOutputStream fileOutputStream;
+//                fileOutputStream=new FileOutputStream(newFile);
+//                fileOutputStream.write(productDto.getFileImg().getBytes());
+//                fileOutputStream.close();
+//            }catch (FileNotFoundException e){
+//                e.printStackTrace();
+//            }catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            //image =productDto.setFileImg( "assets/style/img/"+getOriginalFilename());
+//        }
         //entity
         Product product;
         if (productDto != null) {
-            // dữ liệu ms về type  va brand
             ProductType productType = AppUtil.NVL(productDto.getProductTypeId()) == 0L ? null :
                     productTypeRepository.findById(productDto.getProductTypeId()).orElse(null);
             Brand brand = AppUtil.NVL(productDto.getBrandId()) == 0L ? null :
@@ -108,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
                 product.setUpdatedDate(new Date());
                 product.setProductType(productType);
                 product.setBrand(brand);
-                product.setImage(image);
+                //product.setImage(image);
             }else {
                 product = productRepository.findById(productDto.getId()).orElse(null);
                 if (product != null){
@@ -117,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
                     data.setUpdatedDate(new Date());
                     data.setProductType(productType); // chỗ này do có thể thay đôi nên set lại thôi, data ms lấy ở trên r
                     data.setBrand(brand);
-                   data.setImage(image);
+                    //data.setImage(image);
                     product = data;
                 }
             }
@@ -237,5 +238,12 @@ public class ProductServiceImpl implements ProductService {
         }
         return null;
 
+    }
+
+    @Override
+    public List<ColorDTO> findAllColor(HttpServletRequest request) {
+        return colorReponsitory.findAll().stream()
+                .map(obj -> AppUtil.mapperEntAndDto(obj, ColorDTO.class))
+                .collect(Collectors.toList());
     }
 }

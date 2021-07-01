@@ -14,7 +14,6 @@ public class JwtResponse {
     private Date expiryDate;
     private String type = "Bearer";
     private String username;
-
     public JwtResponse(String token, String username, Date expiryDate){
         this.token = token;
         this.username = username;

@@ -40,10 +40,10 @@ public class OderServiceImpl implements OrderService {
                             dto.setStatusString("Đang lên đơn");
                             break;
                         case 1:
-                            dto.setStatusString("Đang giao");
+                            dto.setStatusString("Đang giao hàng");
                             break;
                         case 2:
-                            dto.setStatusString("Đã giao");
+                            dto.setStatusString("Hoàn thành");
                             break;
                     }
                     return dto;
@@ -81,7 +81,7 @@ public class OderServiceImpl implements OrderService {
                 order.setUpdatedDate(new Date());
                 order.setStatus(oderDTO.getStatus());
                 order.setUsernameKH(data.getUsernameKH());
-                order.setUser(user);
+                order.setUser(data.getUser());
             }
             order = orderRepository.save(order);
             List<OrderDetail> orderDetails = new ArrayList<>();
@@ -119,11 +119,12 @@ public class OderServiceImpl implements OrderService {
     @Override
     public Boolean delete(HttpServletRequest request, Long id) {
         Order oder = orderRepository.findById(id).orElse(null);
+       // OrderDetail orderDetail = orderDetailRepository.findById(id).orElse(null);
         if (oder != null) {
+            //orderDetailRepository.delete(orderDetail);
             orderRepository.delete(oder);
             return true;
         }
-
         return false;
     }
 
@@ -158,7 +159,21 @@ public class OderServiceImpl implements OrderService {
     public List<OderDTO> search(HttpServletRequest request, OderDTO dto) {
         return orderRepository.search(dto.getCode().toLowerCase().trim())
                 .stream()
-                .map(oder -> AppUtil.mapperEntAndDto(oder, OderDTO.class))
+                .map(obj -> {
+                    OderDTO oderDTO = AppUtil.mapperEntAndDto(obj, OderDTO.class);
+                    switch (obj.getStatus()){
+                        case 0:
+                            oderDTO.setStatusString("Đang lên đơn");
+                            break;
+                        case 1:
+                            oderDTO.setStatusString("Đang giao hàng");
+                            break;
+                        case 2:
+                            oderDTO.setStatusString("Hoàn thành");
+                            break;
+                    }
+                    return oderDTO;
+                })
                 .collect(Collectors.toList());
     }
 

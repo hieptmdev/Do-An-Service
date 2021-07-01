@@ -69,57 +69,26 @@ public class ProductController {
     public ResponseEntity search(HttpServletRequest request, ProductDto dto) {
         return ResponseEntity.ok().body(productService.search(request, dto));
     }
-
+    //all color
+    @GetMapping("/allcolor")
+    public ResponseEntity allColor(HttpServletRequest request) {
+        return ResponseEntity.ok().body(productService.findAllColor(request));
+    }
     @GetMapping("/{id}")
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findById(request, id));
     }
-
     //lấy sản phẩm theo id brand
     @GetMapping("/brands/{id}")
     public ResponseEntity findforBrands(HttpServletRequest request, @PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findAllBrand(request, id));
     }
-
-
-    @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody ProductDto dto) {
-        return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
+    @PostMapping(value = "")
+    public ResponseEntity saveOrUpdate(HttpServletRequest request, ProductDto dto) {
+        return null;
+        //return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
     }
-//
-//    @PostMapping("/save")
-//    public String save(@RequestParam String name,
-//                               @RequestParam String code,
-//                               @RequestParam Long priceSell, // giá bán
-//                               @RequestParam Double sale, // giảm giá
-//                               @RequestParam("imageFile") MultipartFile file,String image,
-//                               @RequestParam Long productTypeId, // loại sản phẩm
-//                               @RequestParam String productTypeName,// ở đây đặt tên giống vs tên ở bên ent + tên biến giá trị của đối tượng này: productType + Name, thì modelmapper nó phân truy cập sâu vào bên trong đối tượng lấy giá trị tướng ứng
-//                               @RequestParam Long brandId,
-//                               @RequestParam String brandName,
-//                               @RequestParam Long startPrice,
-//                               @RequestParam String status,
-//                               @RequestParam String mieuTa,
-//                               @RequestParam List<ColorDTO> coloList,
-//                               @RequestParam Long productInfoId
-//    ) {
-//        try {
-//            File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+file.getOriginalFilename());
-//            FileOutputStream fileOutputStream;
-//            fileOutputStream=new FileOutputStream(newFile);
-//            fileOutputStream.write(file.getBytes());
-//            fileOutputStream.close();
-//        }catch (FileNotFoundException e){
-//            e.printStackTrace();
-//        }catch (IOException e){
-//            e.printStackTrace();
-//        }
-//        Product products = new Product();
-//        imageService.saveProduct(products
-//                .setImage("assets/style/img/"+file.getOriginalFilename());
-//        );
-//        return "Success";
-//    }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id) {

@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class JwtTokenFilter extends OncePerRequestFilter {
-    //kiểm tra token
     private static final Logger logger = LoggerFactory.getLogger(JwtTokenFilter.class);
     @Autowired
     private UserService userService;
@@ -37,6 +36,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
             String jwt = AppUtil.getJwt(request, jwtConfig);
+            //kiểm tra xem còn hiệu lực và có k
             if (jwt != null && jwtConfig.validationToken(jwt)) {
                 String username = jwtConfig.getUsernameFromJwtToken(jwt);
                 UserDetails userDetails = userService.loadUserByUsername(username);

@@ -47,6 +47,9 @@ public class CartServiveImpl implements CartService {
         CartDetaill cartDetaill;
         Cart cart;
         User user = null;
+        //Cart kiểm tra cái này để lmj bạn :((
+        //lay user con gi, neu co dang nhap thì phai lay userch, api nay có gui usernam ve dau
+        // nen phải lấy username từ header cảu request
         String authorization = request.getHeader("bn dAuthorization");
         if (!AppUtil.isNullOrEmpty(authorization)){
             String token = authorization.replace("Bearer ", "");
@@ -205,6 +208,61 @@ public class CartServiveImpl implements CartService {
         Cart cart =  cartRepository.findByUser(user);
 
         return  AppUtil.mapperEntAndDto(cart != null ? cart : new Cart(), CartDTO.class); //test đã :v
+    }
+
+    @Override
+    public Boolean deleteCartDetail(HttpServletRequest request, Long id) {
+        User user = null;
+        Cart cart = null;
+        CartDetaill cartDetaill = null;
+        try {
+            cartDetaill = cartDetailRepository.findById(id).orElse(null);
+            if (cartDetaill != null){
+                cart = cartRepository.findById(cartDetaill.getCart().getId()).orElse(null);
+                if (cart != null){
+                    cart.setTotalNumber(cart.getTotalNumber() - 1);
+                    cartDetailRepository.delete(cartDetaill);
+                    cartRepository.save(cart);
+                    return true;
+                }
+                return false;
+            }
+            return false;
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return false;
+        }
+
+//        try {
+//            String authorization = request.getHeader("Authorization");
+//            if (!AppUtil.isNullOrEmpty(authorization)) {
+//                String token = authorization.replace("Bearer ", "");
+//                String username = jwtConfig.getUsernameFromJwtToken(token);
+//                user = userRepository.findByUsername(username);
+//            }
+//            if( user != null) {
+//                cart = cartRepository.findByUser(user);
+//            }else {
+//                Long cartID = cartRepository.findCartId();
+//                cart = cartRepository.getOne(cartID);
+//
+//            }
+//            for (CartDetaill cartDetail : cart.getCartDetaills()) {
+//                if (cartDetail.getId().equals(id) ) {
+//                    cartDetailRepository.delete(cartDetail);
+//                    cart.setTotalNumber(cart.getTotalNumber()-1);
+//                    cart.getCartDetaills().remove(cartDetail);
+//                    cart = cartRepository.save(cart);
+//                    return true;
+//                }
+//            }
+//            return false;
+//
+//        } catch (Exception e) {
+//            System.err.println(e);
+//            return false;
+//        }
+
     }
 
     public void setProductInfo(CartDetaill cartDetaill, List<ProductInfo> productInfoList, Long productInfoId){

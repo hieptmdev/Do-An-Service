@@ -32,7 +32,6 @@ public class OderController {
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(orderService.findById(request, id));
     }
-
     //Tìm kiến đơn hàng khi người dùng nhập
     @GetMapping("/seach")
     public ResponseEntity search(HttpServletRequest request, OderDTO dto){
@@ -53,7 +52,6 @@ public class OderController {
     public ResponseEntity update(HttpServletRequest request, @RequestBody BrandDTO dto){
         return ResponseEntity.ok().body(orderService.saveOrUpdate(request, dto));
     }
-
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id){
         Map<String, String> responseData = new HashMap<>();

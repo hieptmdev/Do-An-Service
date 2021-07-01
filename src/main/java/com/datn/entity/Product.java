@@ -23,7 +23,8 @@ public class Product extends BaseEntity{
     private String image;
     private String status;
     private String mieuTa;
-
+//    @Column(columnDefinition = "int default 0")
+//    private Integer deleteProduct = 0; //0-Chưa xóa - 1 Đã xóa// hoặc là thay nó bằng status
     @OneToMany(mappedBy = "product")
     private List<ProductInfo> productInfoList;
 

@@ -53,12 +53,12 @@ public class JwtConfig {
                 .claim("role",userPrincipal.getCode())
                 .claim("email",userPrincipal.getEmail())
                 .setIssuedAt(present)
-                .setExpiration(new Date(present.getTime() + expiration))
+                .setExpiration(new Date(present.getTime() + expiration)) // thì phải set cung vao dadayspring ko khuyến khích lm vậy vì mai này muswuawr nó rát khó khăn, cái này ms chỉ ở 1 file java, có những giá trị cứng như vậy dùng ở nhiều file sauwr sẽ rất lâu nên spring tập hộp các giá trị cứng lại 1 nơi
                 .signWith(SignatureAlgorithm.HS512, secret)
                 .compact();
     }
 
-    //kiểm tra tokken
+    //kiểm tra lỗi của tokken
     public boolean validationToken(String token){
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);

@@ -16,12 +16,12 @@ import javax.persistence.Table;
 @Setter
 public class ProductInfo extends BaseEntity{
     @ManyToOne
-    private Product product;
+    private Product product; // từ productId tìm đc product
     @ManyToOne
-    private Color color; // màu sắc
-    @ManyToOne
-    private Size size; // kích cỡ
+    private Color color; // màu sắc // từ colorId tìm đc color
     private String image; // ảnh
-    private Long numberProduct; // số sản phẩm - so luong kho
+    private Long numberProduct; // số sản phẩm - so luong kho // gán numberProduct vào đây
+
+    // chạy save thôi
     public ProductInfo() {}
 }

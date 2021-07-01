@@ -3,6 +3,8 @@ package com.datn.controller;
 import com.datn.entity.ImageModel;
 import com.datn.service.iservice.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,7 +21,7 @@ public class ImageUploadController {
     ImageService imageService;
 
     @PostMapping("/upload")
-    public String uploadImage(@RequestParam("imageFile") MultipartFile file,String name){
+    public ResponseEntity uploadImage(@RequestParam("imageFile") MultipartFile file){
         try {
             File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+file.getOriginalFilename());
             FileOutputStream fileOutputStream;
@@ -33,7 +35,7 @@ public class ImageUploadController {
         }
         ImageModel img = new ImageModel("assets/style/img/"+file.getOriginalFilename(), file.getOriginalFilename());
         imageService.save(img);
-        return "upload thành công";
+        return new ResponseEntity(img, HttpStatus.OK);
     }
     @GetMapping(path = { "/get/{imageName}" })
     public List<ImageModel> getImage(@PathVariable("imageName") String imageName) {
