@@ -70,7 +70,6 @@ public class BrandServiceImpl implements BrandService {
         if (brand !=null){
             return AppUtil.mapperEntAndDto(brand, BrandDTO.class);
         }
-
         return null;
     }
 

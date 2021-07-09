@@ -10,6 +10,7 @@ import com.datn.service.ProductServiceImpl;
 import com.datn.service.iservice.ImageService;
 import com.datn.service.iservice.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -58,7 +59,7 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.findSale());
     }
 
-    //Lấy chi tiết sản phẩm
+    //Lấy chi tiết sản phẩm theo mã code
     @GetMapping("/codename")
     public ResponseEntity detailProduct(HttpServletRequest request, Long id){
         return ResponseEntity.ok().body(productService.searchDetailProduct(request,id));
@@ -83,13 +84,10 @@ public class ProductController {
     public ResponseEntity findforBrands(HttpServletRequest request, @PathVariable Long id) {
         return ResponseEntity.ok().body(productService.findAllBrand(request, id));
     }
-    @PostMapping(value = "")
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity saveOrUpdate(HttpServletRequest request, ProductDto dto) {
-        return null;
-        //return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
+        return ResponseEntity.ok().body(productService.saveOrUpdate(request, dto));
     }
-
-
     @DeleteMapping("/{id}")
     public ResponseEntity deleteById(HttpServletRequest request, @PathVariable Long id) {
         Map<String, String> responseData = new HashMap<>();

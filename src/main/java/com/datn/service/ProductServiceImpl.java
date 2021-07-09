@@ -9,6 +9,8 @@ import com.datn.repository.ProductTypeRepository;
 import com.datn.service.iservice.ProductService;
 import com.datn.util.AppUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -78,23 +80,6 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
-        String image = null;
-
-//        if (productDto.getFileImg() != null){
-//            try {
-//                File newFile = new File("F:\\DoAn_SpringBoots\\do-an-web\\src\\assets\\style\\img\\"+productDto.getFileImg().getOriginalFilename());
-//                FileOutputStream fileOutputStream;
-//                fileOutputStream=new FileOutputStream(newFile);
-//                fileOutputStream.write(productDto.getFileImg().getBytes());
-//                fileOutputStream.close();
-//            }catch (FileNotFoundException e){
-//                e.printStackTrace();
-//            }catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            //image =productDto.setFileImg( "assets/style/img/"+getOriginalFilename());
-//        }
-        //entity
         Product product;
         if (productDto != null) {
             ProductType productType = AppUtil.NVL(productDto.getProductTypeId()) == 0L ? null :
@@ -109,24 +94,22 @@ public class ProductServiceImpl implements ProductService {
                 product.setUpdatedDate(new Date());
                 product.setProductType(productType);
                 product.setBrand(brand);
-                //product.setImage(image);
+                product.setImage("assets/style/img/"+productDto.getImage());
             }else {
                 product = productRepository.findById(productDto.getId()).orElse(null);
                 if (product != null){
                     Product data = AppUtil.mapperEntAndDto(productDto, Product.class);
                     data.setId(product.getId());
                     data.setUpdatedDate(new Date());
-                    data.setProductType(productType); // chỗ này do có thể thay đôi nên set lại thôi, data ms lấy ở trên r
+                    data.setProductType(productType);
                     data.setBrand(brand);
-                    //data.setImage(image);
-                    product = data;
+                    product.setImage("assets/style/img/loi.png");
                 }
             }
             return AppUtil.mapperEntAndDto(productRepository.save(product), ProductDto.class);
         }
         return null;
     }
-
     // tìm kiếm sp theo Id
     @Override
     public ProductDto findById(HttpServletRequest request, Long id) {

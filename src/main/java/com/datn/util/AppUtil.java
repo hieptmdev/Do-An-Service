@@ -23,14 +23,14 @@ public class AppUtil {
         return modelMapper.map(source, result);
     }
 
-    //kierm tra chuỗi đê :v
+
     public static Boolean isNullOrEmpty(String s){
         if (s == null || s.isEmpty() || "".equals(s) || s.length() == 0){
             return true;
         }
         return false;
     }
-    //list rỗng
+
     public static Boolean isNullOrEmpty(List list){
         if (list == null || list.isEmpty() || list.size() == 0){
             return true;

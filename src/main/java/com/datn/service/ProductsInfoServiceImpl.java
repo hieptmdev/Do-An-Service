@@ -76,8 +76,6 @@ public class ProductsInfoServiceImpl implements ProductsInfoService {
         }
         return null;
     }
-
-    //delete thế này còn muốn thế nào nưuax
     @Override
     @Transactional
     public Boolean delete(HttpServletRequest request, Long id) {

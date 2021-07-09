@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -185,5 +186,10 @@ public class OderServiceImpl implements OrderService {
                 .stream()
                 .map(od -> AppUtil.mapperEntAndDto(od, OderDetailDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Map<String, Double> getChartDateByYear(Long year) {
+        return orderRepository.getChartDateByYear(year);
     }
 }

@@ -4,6 +4,7 @@ import com.datn.dto.BrandDTO;
 import com.datn.dto.OderDTO;
 import com.datn.dto.OderDetailDTO;
 import com.datn.dto.ProductDto;
+import com.datn.service.ExcelService;
 import com.datn.service.iservice.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,8 @@ import java.util.Map;
 @RequestMapping("/oders")
 @CrossOrigin("http://localhost:4200")
 public class OderController {
+    @Autowired
+    ExcelService excelService;
     @Autowired
     OrderService orderService;
     @GetMapping("/all")
@@ -63,5 +66,20 @@ public class OderController {
             return ResponseEntity.ok().body(responseData);
         }
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/chart/{year}")
+    public ResponseEntity getChartDateByYear(@PathVariable Long year){
+        Map<String, Double> data = orderService.getChartDateByYear(year);
+        if (data == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(data);
+    }
+
+    @PostMapping ("/download/order")
+    public byte[] getFile(@RequestBody OderDTO dto) {
+        String filename = "tutorials.xlsx";
+        return  excelService.dowloadExcel(dto);
     }
 }
