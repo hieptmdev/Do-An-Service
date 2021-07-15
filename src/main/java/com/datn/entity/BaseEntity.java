@@ -9,8 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
-//Bảng chung, các bảng // đây ko phải bảng
-// lớp chứa các thuộc tính chung
 @MappedSuperclass
 @Getter
 @Setter

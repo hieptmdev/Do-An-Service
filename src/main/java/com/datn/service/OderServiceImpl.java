@@ -29,6 +29,8 @@ public class OderServiceImpl implements OrderService {
     private OrderDetailRepository orderDetailRepository;
     @Autowired
     private CartDetailRepository cartDetailRepository;
+    @Autowired
+    private ProductInfoRepository productInfoRepository;
 
     @Override
     public List<OderDTO> findAll() {
@@ -87,13 +89,18 @@ public class OderServiceImpl implements OrderService {
             order = orderRepository.save(order);
             List<OrderDetail> orderDetails = new ArrayList<>();
             if (AppUtil.NVL(oderDTO.getId()) == 0L && cart != null) {
+                List<ProductInfo> productInfoList = new ArrayList<>();
                 Order finalOrder = order;
                 cart.getCartDetaills().stream().forEach(cd -> {
+                    ProductInfo productInfo = cd.getProductInfo();
                     OrderDetail orderDetail = new OrderDetail();
                     orderDetail.setOrder(finalOrder);
                     orderDetail.setProductInfo(cd.getProductInfo());
                     orderDetail.setNumberProduct(cd.getNumberPro());
                     orderDetails.add(orderDetail);
+
+                    productInfo.setNumberProduct(productInfo.getNumberProduct() - cd.getNumberPro());
+                    productInfoList.add(productInfo);
                 });
                 order.setNumberProduct(cart.getTotalNumber());
                 order.setTotalResult(cart.getTotalMonneyCart());
@@ -101,6 +108,7 @@ public class OderServiceImpl implements OrderService {
                 // dat hang xong phai xoa cart
                 cartDetailRepository.deleteAll(cart.getCartDetaills());
                 cartRepository.delete(cart);
+                productInfoRepository.saveAll(productInfoList);
             }
            return AppUtil.mapperEntAndDto(orderRepository.save(order), OderDTO.class);
 

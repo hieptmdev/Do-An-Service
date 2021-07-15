@@ -6,11 +6,9 @@ public class VNPayResponse {
     public VNPayResponse( String message) {
         this.message = message;
     }
-
     public VNPayResponse() {
 
     }
-
     public void setMessage(String payment_success) {
     }
 }

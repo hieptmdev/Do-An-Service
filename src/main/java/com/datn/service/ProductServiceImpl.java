@@ -103,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
                     data.setUpdatedDate(new Date());
                     data.setProductType(productType);
                     data.setBrand(brand);
-                    product.setImage("assets/style/img/loi.png");
+                    product.setImage("assets/style/img/"+productDto.getImage());
                 }
             }
             return AppUtil.mapperEntAndDto(productRepository.save(product), ProductDto.class);
@@ -210,13 +210,8 @@ public class ProductServiceImpl implements ProductService {
     //Chi tiết product
     @Override
     public ProductDto searchDetailProduct(HttpServletRequest request, Long id) {
-        Product product = productRepository.findById(id).orElse(null);// 2 kiểu khác nhau sao convert
+        Product product = productRepository.findById(id).orElse(null);
         if(product !=null){
-            //id product khác null mới truyền vào
-//            return productRepository.selectproductDetail(product.getId())
-//                    .stream()
-//                    .map(detail -> AppUtil.mapperEntAndDto(detail,ProductInfoDTO.class))
-//                    .collect(Collectors.toList());
             return AppUtil.mapperEntAndDto(product, ProductDto.class);
         }
         return null;

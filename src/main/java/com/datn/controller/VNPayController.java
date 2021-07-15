@@ -27,8 +27,6 @@ public class VNPayController {
     @PostMapping(value = "/payment")
     public ResponseEntity<?> getUrl(HttpServletRequest res, @RequestBody VNPayRequest dto)  {
         String vnp_IpAddr = VNPayConfig.getIpAddress(res);
-//      vnp_Params.put("vnp_IpAddr", "27.72.147.61");
-        // Cáº§n gá»­i thÃªm sá»‘ tiá»�n, ngÃ¢n hÃ ng , ná»™i dung
         String message = vnpayService.createOrderPayment(vnp_IpAddr, dto.getVnp_Amount(), dto.getVnp_BankCode(),dto.getVnp_OrderInfo());
         return new ResponseEntity<>(new VNPayResponse(message), HttpStatus.OK);
     }
@@ -36,6 +34,5 @@ public class VNPayController {
     public ResponseEntity<?> getIPN(@RequestParam Map<String, String> all_Param ) {
         VNPayResponse vnp= vnpayService.checkStatusOrderPayment(all_Param);
         return new ResponseEntity<>(vnp, HttpStatus.OK);
-//		return new ResponseEntity<>(all_Param, HttpStatus.OK);
     }
 }

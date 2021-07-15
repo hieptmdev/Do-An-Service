@@ -21,7 +21,5 @@ public class ProductInfo extends BaseEntity{
     private Color color; // màu sắc // từ colorId tìm đc color
     private String image; // ảnh
     private Long numberProduct; // số sản phẩm - so luong kho // gán numberProduct vào đây
-
-    // chạy save thôi
     public ProductInfo() {}
 }

@@ -18,7 +18,6 @@ import java.util.Date;
 public class JwtConfig {
     //Thoong tin JWT , tạo nên token
     private static final Logger logger = LoggerFactory.getLogger(JwtConfig.class);
-
     @Autowired
     UserService userService;
 
@@ -33,25 +32,27 @@ public class JwtConfig {
     @Value("${jwt.auth-uri}")
     private String authUri;
 
-    public JwtConfig() {}
+    public JwtConfig() {
+    }
 
     /**
      * Tạo và trả về jwt (token)
+     *
      * @param authentication
      * @return
      */
 
-    public String generateToken(Authentication authentication){
+    public String generateToken(Authentication authentication) {
         Date present = new Date();
         User userPrincipal = (User) authentication.getPrincipal();
         System.out.println(userPrincipal.toString());
         return Jwts.builder()
                 .setSubject(userPrincipal.getUsername())
                 .claim("admin_account", userPrincipal.getIsAdminAccount())
-                .claim("userID",userPrincipal.getId())
-                .claim("name",userPrincipal.getName())
-                .claim("role",userPrincipal.getCode())
-                .claim("email",userPrincipal.getEmail())
+                .claim("userID", userPrincipal.getId())
+                .claim("name", userPrincipal.getName())
+                .claim("role", userPrincipal.getCode())
+                .claim("email", userPrincipal.getEmail())
                 .setIssuedAt(present)
                 .setExpiration(new Date(present.getTime() + expiration)) // thì phải set cung vao dadayspring ko khuyến khích lm vậy vì mai này muswuawr nó rát khó khăn, cái này ms chỉ ở 1 file java, có những giá trị cứng như vậy dùng ở nhiều file sauwr sẽ rất lâu nên spring tập hộp các giá trị cứng lại 1 nơi
                 .signWith(SignatureAlgorithm.HS512, secret)
@@ -59,11 +60,11 @@ public class JwtConfig {
     }
 
     //kiểm tra lỗi của tokken
-    public boolean validationToken(String token){
+    public boolean validationToken(String token) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
-        }catch (SignatureException e) {
+        } catch (SignatureException e) {
             logger.error("Invalid JWT signature -> Message: {}", e.getMessage());
         } catch (MalformedJwtException e) {
             logger.error("Invalid JWT token -> Message: {}", e.getMessage());
@@ -79,6 +80,7 @@ public class JwtConfig {
 
     /**
      * Trả về username trong jwt
+     *
      * @param token
      * @return
      */
@@ -91,10 +93,11 @@ public class JwtConfig {
 
     /**
      * Trả về thời gian hết hạn của jwt
+     *
      * @param token
      * @return
      */
-    public Date getExpiryDate(String token){
+    public Date getExpiryDate(String token) {
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

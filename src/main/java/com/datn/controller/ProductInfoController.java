@@ -23,7 +23,6 @@ public class ProductInfoController {
     public ResponseEntity findInfoById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(productsInfoService.findById(request, id));
     }
-    //thêm chi tiết sản phẩm theo Idproduct mà
     @PostMapping("")
     public  ResponseEntity saveofupdatechitietProduct(HttpServletRequest request, @RequestBody ProductInfoDTO dto){
         return ResponseEntity.ok().body(productsInfoService.saveOrUpdate(request,dto));
