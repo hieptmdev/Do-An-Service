@@ -153,7 +153,7 @@ public class OderServiceImpl implements OrderService {
                                 dto.setStatusString("Đang giao");
                                 break;
                             case 2:
-                                dto.setStatusString("Đã giao");
+                                dto.setStatusString("Hoàn thành");
                                 break;
                         }
                         return dto;
@@ -198,6 +198,29 @@ public class OderServiceImpl implements OrderService {
 
     @Override
     public Map<String, Double> getChartDateByYear(Long year) {
+
         return orderRepository.getChartDateByYear(year);
+    }
+
+    @Override
+    public List<OderDTO> selectOderByStatus(Integer status) {
+        List<Order> orders = orderRepository.findByCode(status);
+        List<OderDTO> oderDTOS = orders.stream() .map(obj -> {
+            OderDTO dto = AppUtil.mapperEntAndDto(obj, OderDTO.class);
+            switch (obj.getStatus()){
+                case 0:
+                    dto.setStatusString("Đang lên đơn");
+                    break;
+                case 1:
+                    dto.setStatusString("Đang giao");
+                    break;
+                case 2:
+                    dto.setStatusString("Hoàn thành");
+                    break;
+            }
+            return dto;
+        })
+                .collect(Collectors.toList());
+        return oderDTOS;
     }
 }

@@ -39,4 +39,5 @@ public class AuthController {
 
         return new ResponseEntity<>(new JwtResponse(jwtToken, userDetails.getUsername(), expiryDate), HttpStatus.OK);
     }
+
 }

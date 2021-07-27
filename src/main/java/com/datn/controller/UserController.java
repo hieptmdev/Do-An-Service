@@ -1,6 +1,9 @@
 package com.datn.controller;
 
+import com.datn.dto.OderDTO;
 import com.datn.dto.UserDto;
+import com.datn.entity.User;
+import com.datn.repository.OrderRepositoryCustom;
 import com.datn.service.iservice.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +19,6 @@ import java.util.Map;
 public class UserController {
     @Autowired
     UserService userService;
-
     @GetMapping("/all")
     public ResponseEntity findAll(){
         return ResponseEntity.ok().body(userService.findAll());
@@ -32,6 +34,14 @@ public class UserController {
     @PostMapping("")
     public ResponseEntity saveOrUpdate(HttpServletRequest request, @RequestBody UserDto dto){
         return ResponseEntity.ok().body(userService.saveOrUpdate(request, dto));
+    }
+    @PostMapping("/seach")
+    public ResponseEntity search(HttpServletRequest request,@RequestBody UserDto dto){
+        return ResponseEntity.ok().body(userService.search(request,dto));
+    }
+    @GetMapping("select-user-by-code/{code}")
+    public ResponseEntity selectUserByCode (@PathVariable Integer code){
+        return ResponseEntity.ok().body(userService.selectUserByCode(code));
     }
 
     @DeleteMapping("/{id}")

@@ -89,7 +89,8 @@ public class BrandServiceImpl implements BrandService {
     @Override
     public List<BrandDTO> search(BrandDTO dto) {
         return brandRepository.search(dto.getName())
-                .stream().map(brand -> AppUtil.mapperEntAndDto(brand, BrandDTO.class))
+                .stream()
+                .map(brand -> AppUtil.mapperEntAndDto(brand, BrandDTO.class))
                 .collect(Collectors.toList());
     }
 

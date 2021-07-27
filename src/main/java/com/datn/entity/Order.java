@@ -28,7 +28,6 @@ public class Order extends BaseEntity{
     private User user;
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-
     public Order() {
     }
 }

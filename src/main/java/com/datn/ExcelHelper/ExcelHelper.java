@@ -50,7 +50,6 @@ public class ExcelHelper {
                 row.createCell(5).setCellValue(order.getDeliveryAddress());
                 row.createCell(6).setCellValue(order.getPhoneNumber());
             }
-
             workbook.write(out);
             return out.toByteArray();
         } catch (IOException e) {

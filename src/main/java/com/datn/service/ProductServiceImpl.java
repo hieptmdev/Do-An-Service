@@ -80,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto saveOrUpdate(HttpServletRequest request, Object object) {
         ProductDto productDto = (ProductDto) object;
-        Product product;
+        Product product = null;
         if (productDto != null) {
             ProductType productType = AppUtil.NVL(productDto.getProductTypeId()) == 0L ? null :
                     productTypeRepository.findById(productDto.getProductTypeId()).orElse(null);
@@ -95,14 +95,16 @@ public class ProductServiceImpl implements ProductService {
                 product.setProductType(productType);
                 product.setBrand(brand);
                 product.setImage("assets/style/img/"+productDto.getImage());
-            }else {
-                product = productRepository.findById(productDto.getId()).orElse(null);
-                if (product != null){
-                    Product data = AppUtil.mapperEntAndDto(productDto, Product.class);
-                    data.setId(product.getId());
-                    data.setUpdatedDate(new Date());
-                    data.setProductType(productType);
-                    data.setBrand(brand);
+            }
+            //update
+            else {
+                Product data = productRepository.findById(productDto.getId()).orElse(null);
+                if (data != null){
+                    product = AppUtil.mapperEntAndDto(productDto, Product.class);
+                    product.setId(data.getId());
+                    product.setUpdatedDate(new Date());
+                    product.setProductType(productType);
+                    product.setBrand(brand);
                     product.setImage("assets/style/img/"+productDto.getImage());
                 }
             }

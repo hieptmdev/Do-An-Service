@@ -2,6 +2,7 @@ package com.datn.service.iservice;
 
 import com.datn.dto.OderDTO;
 import com.datn.dto.OderDetailDTO;
+import com.datn.dto.UserDto;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -16,4 +17,5 @@ public interface OrderService extends BaseService{
 
     Map<String, Double> getChartDateByYear(Long year);
 
+    List<OderDTO> selectOderByStatus (Integer status);
 }

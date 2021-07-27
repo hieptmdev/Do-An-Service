@@ -7,9 +7,11 @@ import com.datn.dto.ProductDto;
 import com.datn.service.ExcelService;
 import com.datn.service.iservice.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,11 +36,6 @@ public class OderController {
     @GetMapping("/{id}")
     public ResponseEntity findById(HttpServletRequest request, @PathVariable Long id){
         return ResponseEntity.ok().body(orderService.findById(request, id));
-    }
-    //Tìm kiến đơn hàng khi người dùng nhập
-    @GetMapping("/seach")
-    public ResponseEntity search(HttpServletRequest request, OderDTO dto){
-        return ResponseEntity.ok().body(orderService.search(request,dto));
     }
     //Lấy chi tiết đơn hàng theo code
     @GetMapping("/oderdetaill")
@@ -79,7 +76,17 @@ public class OderController {
 
     @PostMapping ("/download/order")
     public byte[] getFile(@RequestBody OderDTO dto) {
-        String filename = "tutorials.xlsx";
+        String filename = "oderExcel.xlsx";
         return  excelService.dowloadExcel(dto);
+    }
+    //Tìm kiến đơn hàng khi người dùng nhập
+    @PostMapping("/seach")
+    public ResponseEntity search(HttpServletRequest request,@RequestBody OderDTO dto){
+        return ResponseEntity.ok().body(orderService.search(request,dto));
+    }
+
+    @GetMapping("select-oder-by-status/{status}")
+    public ResponseEntity selectOderByCode (@PathVariable Integer status){
+        return ResponseEntity.ok().body(orderService.selectOderByStatus(status));
     }
 }

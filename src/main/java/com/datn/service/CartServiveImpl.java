@@ -47,10 +47,8 @@ public class CartServiveImpl implements CartService {
         CartDetaill cartDetaill;
         Cart cart;
         User user = null;
-        //Cart kiểm tra cái này để lmj bạn :((
-        //lay user con gi, neu co dang nhap thì phai lay userch, api nay có gui usernam ve dau
-        // nen phải lấy username từ header cảu request
-        String authorization = request.getHeader("bn dAuthorization");
+
+        String authorization = request.getHeader("Authorization");
         if (!AppUtil.isNullOrEmpty(authorization)){
             String token = authorization.replace("Bearer ", "");
             String username = jwtConfig.getUsernameFromJwtToken(token);

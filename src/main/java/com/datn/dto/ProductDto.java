@@ -1,7 +1,5 @@
 package com.datn.dto;
-import com.datn.entity.Brand;
-import com.datn.entity.ProductInfo;
-import com.datn.entity.ProductType;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.web.multipart.MultipartFile;

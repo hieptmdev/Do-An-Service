@@ -14,6 +14,4 @@ public interface OrderRepository extends JpaRepository<Order, Long>, OrderReposi
     // tìm kiếm oder theo mã
     @Query("select o from Order o where lower(o.code) like concat('%', :code, '%')")
     List<Order> search(String code);
-
-
 }

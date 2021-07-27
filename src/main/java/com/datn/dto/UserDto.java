@@ -9,7 +9,7 @@ import java.util.Date;
 @Setter
 public class UserDto extends BaseDto{
     private String name;
-    private String code;
+    private Integer code;
     private Date dob; // ngày sinh
     private String email;
     private String phoneNumber; // số điện thoại
